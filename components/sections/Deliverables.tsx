@@ -20,7 +20,7 @@ export function Deliverables() {
   ];
 
   return (
-    <section className="py-16 md:py-20 px-4 bg-white">
+    <section id="what-you-get" className="py-16 md:py-20 px-4 bg-white scroll-mt-20">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-navy mb-8">
           What you get{" "}

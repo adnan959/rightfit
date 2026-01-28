@@ -23,7 +23,7 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="py-16 md:py-20 px-4">
+    <section id="how-it-works" className="py-16 md:py-20 px-4 scroll-mt-20">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-navy mb-8">
           How it works{" "}

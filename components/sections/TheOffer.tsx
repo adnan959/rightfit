@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export function TheOffer() {
   return (
-    <section className="py-16 md:py-20 px-4 bg-white">
+    <section id="pricing" className="py-16 md:py-20 px-4 bg-white scroll-mt-20">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-2xl md:text-3xl font-bold text-navy mb-6">
           The offer{" "}

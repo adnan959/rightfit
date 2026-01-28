@@ -10,7 +10,7 @@ export function FinalCTA() {
 
   return (
     <>
-      <section id="free-audit" className="py-16 md:py-24 px-4 bg-white">
+      <section id="free-audit" className="py-16 md:py-24 px-4 bg-white scroll-mt-20">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-navy mb-4">
             Final CTA{" "}
