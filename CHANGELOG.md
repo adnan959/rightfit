@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-01-31] - Build Fixes for Vercel Deployment
+
+### Fixed
+- **TypeScript error in LeadSource type** - Added missing source values (`free_audit`, `newsletter`, `other`) to `LeadSource` type in `lib/db/types.ts`
+- **Suspense boundary for useSearchParams** - Wrapped `useSearchParams()` in Suspense boundary in `/admin/login` page to fix Next.js 16 static generation error
+
+### Changed
+- Simplified `LeadDisplay` interface in `app/admin/leads/page.tsx` to use updated `LeadSource` type
+
+---
+
 ## [2026-01-31] - Admin Backoffice & Supabase Integration
 
 ### Added

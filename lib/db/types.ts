@@ -41,7 +41,10 @@ export type PaymentStatus =
 export type LeadSource = 
   | 'audit_modal'
   | 'form_abandon'
-  | 'direct';
+  | 'direct'
+  | 'free_audit'
+  | 'newsletter'
+  | 'other';
 
 export type PriorityLevel = 
   | 'normal'

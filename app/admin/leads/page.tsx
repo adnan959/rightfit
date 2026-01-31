@@ -27,7 +27,6 @@ import type { Lead, LeadSource } from "@/lib/db/types";
 interface LeadDisplay extends Lead {
   // For JSON format compatibility
   timestamp?: string;
-  source: LeadSource | "free_audit" | "newsletter" | "other";
 }
 
 const SOURCE_LABELS: Record<string, string> = {
