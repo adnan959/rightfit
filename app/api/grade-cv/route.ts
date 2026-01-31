@@ -7,6 +7,8 @@ import {
   CVGradeResult,
   getGradeLabel,
 } from "@/lib/cv-reviewer-skill";
+import { supabaseAdmin, isSupabaseConfigured, uploadFile, CV_STORAGE_BUCKET } from "@/lib/supabase";
+import type { AIGradeInsert, AIGradeBreakdown } from "@/lib/db/types";
 
 // Simulated grade result for demo mode (when no API key)
 function getSimulatedGrade(fullAnalysis: boolean): CVGradeResult {
@@ -55,12 +57,90 @@ function getSimulatedGrade(fullAnalysis: boolean): CVGradeResult {
   return result;
 }
 
+// Store AI grade in Supabase
+async function storeAIGrade(
+  submissionId: string | null,
+  gradeResult: CVGradeResult,
+  rawResponse?: string
+): Promise<void> {
+  if (!isSupabaseConfigured() || !supabaseAdmin) {
+    return;
+  }
+
+  try {
+    const breakdown: AIGradeBreakdown = {
+      clarity: gradeResult.breakdown.clarity,
+      impact_evidence: gradeResult.breakdown.impactEvidence,
+      scannability: gradeResult.breakdown.scannability,
+      ats_safety: gradeResult.breakdown.atsSafety,
+      first_impression: gradeResult.breakdown.firstImpression,
+    };
+
+    const gradeData: AIGradeInsert = {
+      submission_id: submissionId,
+      overall_score: gradeResult.overallScore,
+      label: gradeResult.label,
+      breakdown,
+      top_issues: gradeResult.topIssues,
+      detailed_analysis: gradeResult.detailedAnalysis || null,
+      recommendations: gradeResult.recommendations || [],
+      raw_response: rawResponse ? { text: rawResponse } : null,
+      admin_verified: false,
+      admin_notes: null,
+    };
+
+    const { error } = await supabaseAdmin.from('ai_grades').insert(gradeData);
+
+    if (error) {
+      console.error("Failed to store AI grade:", error);
+    }
+  } catch (error) {
+    console.error("Error storing AI grade:", error);
+  }
+}
+
+// Store lead CV in Supabase storage for free audits
+async function storeLeadCV(
+  email: string,
+  cvFile: File
+): Promise<string | null> {
+  if (!isSupabaseConfigured() || !supabaseAdmin) {
+    return null;
+  }
+
+  try {
+    const cvBuffer = Buffer.from(await cvFile.arrayBuffer());
+    const ext = cvFile.name.split(".").pop() || 'pdf';
+    const timestamp = Date.now();
+    const cvPath = `leads/${timestamp}_${email.replace('@', '_at_')}.${ext}`;
+
+    const { path, error } = await uploadFile(
+      CV_STORAGE_BUCKET,
+      cvPath,
+      cvBuffer,
+      cvFile.type
+    );
+
+    if (error) {
+      console.error("Failed to upload lead CV:", error);
+      return null;
+    }
+
+    return path;
+  } catch (error) {
+    console.error("Error uploading lead CV:", error);
+    return null;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const cvFile = formData.get("cv") as File | null;
     const targetRole = formData.get("targetRole") as string | null;
     const fullAnalysis = formData.get("fullAnalysis") === "true";
+    const submissionId = formData.get("submissionId") as string | null;
+    const email = formData.get("email") as string | null;
 
     if (!cvFile) {
       return NextResponse.json(
@@ -81,6 +161,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Store lead CV if email provided (for free audits)
+    let leadCvPath: string | null = null;
+    if (email && !submissionId) {
+      leadCvPath = await storeLeadCV(email, cvFile);
+    }
+
     // Check if OpenAI API key is configured
     const hasApiKey = !!process.env.OPENAI_API_KEY;
 
@@ -91,10 +177,16 @@ export async function POST(request: NextRequest) {
       // Simulate a brief delay for realism
       await new Promise((resolve) => setTimeout(resolve, 1500));
       
+      const grade = getSimulatedGrade(fullAnalysis);
+      
+      // Store grade in Supabase if configured
+      await storeAIGrade(submissionId, grade);
+      
       return NextResponse.json({
         success: true,
-        grade: getSimulatedGrade(fullAnalysis),
+        grade,
         demo: true,
+        leadCvPath,
       });
     }
 
@@ -150,9 +242,13 @@ export async function POST(request: NextRequest) {
     // Parse response
     const gradeResult = parseGradingResponse(responseText);
 
+    // Store grade in Supabase if configured
+    await storeAIGrade(submissionId, gradeResult, responseText);
+
     return NextResponse.json({
       success: true,
       grade: gradeResult,
+      leadCvPath,
     });
   } catch (error) {
     console.error("Error grading CV:", error);

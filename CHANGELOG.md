@@ -2,6 +2,76 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-01-31] - Admin Backoffice & Supabase Integration
+
+### Added
+
+#### Admin Backoffice (`/admin`)
+- Password-protected admin area (middleware.ts)
+- Login page with session cookie management
+- **Dashboard** (`/admin`): Stats cards + submissions table with filters
+- **Submissions List** (`/admin/submissions`): Full list with search, status filter, pagination
+- **Submission Detail** (`/admin/submissions/[id]`): 4-tab interface
+  - Overview: Customer info, career goals, files
+  - CV Review: AI analysis display, notes/prompts editor
+  - Billing: Payment status (Stripe-ready)
+  - Activity: Timeline of all actions
+- **Leads Page** (`/admin/leads`): Lead management with conversion tracking
+- **Billing Page** (`/admin/billing`): Revenue overview, payment history
+- **Settings Page** (`/admin/settings`): Integration status, env var reference
+
+#### Supabase Integration
+- Database schema (`lib/db/schema.sql`) with 6 tables:
+  - `submissions` - CV rewrite orders
+  - `ai_grades` - ChatGPT analysis results
+  - `review_notes` - Admin notes/prompts
+  - `payments` - Payment tracking (Stripe-ready)
+  - `leads` - Free audit email captures
+  - `activity_log` - Audit trail
+- TypeScript types (`lib/db/types.ts`) matching schema
+- Supabase client (`lib/supabase.ts`) with file storage helpers
+- File upload to Supabase Storage (cv-files bucket)
+
+#### API Routes (Admin)
+- `/api/admin/login` - Session creation
+- `/api/admin/logout` - Session destruction
+- `/api/admin/submissions` - List + update submissions
+- `/api/admin/submissions/[id]` - Single submission with relations
+- `/api/admin/stats` - Dashboard statistics
+- `/api/admin/notes` - CRUD for review notes
+- `/api/admin/payments` - Payment tracking
+- `/api/admin/leads` - Lead management
+
+#### Updated API Routes
+- `/api/submit-intake` - Now stores to Supabase with file upload
+- `/api/grade-cv` - Stores AI grades in database
+- `/api/capture-lead` - Stores leads with conversion tracking
+- All routes have JSON file fallback when Supabase not configured
+
+#### Admin Components
+- `AdminNav` - Sidebar navigation
+- `AdminShell` - Page wrapper with header
+- `StatsCard` - Dashboard stat display
+- `SubmissionsTable` - Paginated table with status dropdown
+
+#### Utilities
+- `formatDistanceToNow()` - Relative time formatting
+- `formatCurrency()` - Currency display
+- `formatDate()` / `formatDateTime()` - Date formatting
+
+### Configuration
+- `.env.example` updated with Supabase + admin vars
+- `.env.local` created with project credentials
+- Supabase project: https://supabase.com/dashboard/project/flffcpfnxalqkysfwqhl
+
+### Technical Notes
+- Admin password: 258741 (via ADMIN_PASSWORD env var)
+- APIs gracefully fall back to JSON files if Supabase not configured
+- Middleware protects all `/admin/*` routes except `/admin/login`
+- 7-day session cookie for admin auth
+
+---
+
 ## [2026-01-28] - Initial MVP Release
 
 ### Added
