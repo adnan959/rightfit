@@ -5,6 +5,7 @@ export interface OrderConfirmationData {
   customerEmail: string;
   orderId: string;
   orderDate: string;
+  orderUrl: string; // Magic link to order page
 }
 
 export interface CVDeliveryData {
@@ -12,6 +13,7 @@ export interface CVDeliveryData {
   customerEmail: string;
   orderId: string;
   downloadUrl: string;
+  orderUrl: string; // Magic link to order page
 }
 
 export function getOrderConfirmationEmail(data: OrderConfirmationData): {
@@ -49,6 +51,12 @@ export function getOrderConfirmationEmail(data: OrderConfirmationData): {
       <div style="background-color: #F7FAFC; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
         <p style="color: #718096; font-size: 14px; margin: 0 0 8px 0;">Order Reference</p>
         <p style="color: #2D3748; font-size: 16px; font-weight: 600; margin: 0;">#${data.orderId.slice(0, 8).toUpperCase()}</p>
+      </div>
+
+      <div style="text-align: center; margin-bottom: 24px;">
+        <a href="${data.orderUrl}" style="display: inline-block; background-color: #FF6B6B; color: white; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 50px;">
+          View Order Status
+        </a>
       </div>
       
       <h3 style="color: #2D3748; font-size: 16px; margin: 0 0 16px 0;">Here's what happens next:</h3>
@@ -90,6 +98,8 @@ Thanks ${data.customerName.split(" ")[0]}!
 I've received your CV and all the details you shared. I'm excited to help make your experience shine through.
 
 Order Reference: #${data.orderId.slice(0, 8).toUpperCase()}
+
+View your order status: ${data.orderUrl}
 
 Here's what happens next:
 
@@ -137,14 +147,14 @@ export function getCVDeliveryEmail(data: CVDeliveryData): {
         Your rewritten CV is ready for download. I've restructured it to highlight your impact and make it easy for recruiters to see your value in seconds.
       </p>
       
-      <div style="text-align: center; margin-bottom: 24px;">
-        <a href="${data.downloadUrl}" style="display: inline-block; background-color: #FF6B6B; color: white; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 50px;">
-          Download Your CV
+      <div style="text-align: center; margin-bottom: 16px;">
+        <a href="${data.orderUrl}" style="display: inline-block; background-color: #FF6B6B; color: white; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 50px;">
+          View Order & Download
         </a>
       </div>
-      
+
       <p style="color: #718096; font-size: 14px; text-align: center; margin: 0 0 24px 0;">
-        This download link expires in 7 days.
+        Or download directly: <a href="${data.downloadUrl}" style="color: #FF6B6B;">Download CV</a>
       </p>
       
       <div style="background-color: #F7FAFC; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
@@ -155,9 +165,15 @@ export function getCVDeliveryEmail(data: CVDeliveryData): {
           <li>Keep it to 1-2 pages maximum</li>
         </ul>
       </div>
+
+      <div style="background-color: #EBF8FF; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+        <p style="color: #2B6CB0; font-size: 14px; margin: 0;">
+          <strong>Need changes?</strong> You can request a revision directly from your <a href="${data.orderUrl}" style="color: #2B6CB0;">order page</a>.
+        </p>
+      </div>
       
       <p style="color: #4A5568; font-size: 14px; line-height: 1.6; margin: 0;">
-        If you have any questions or need revisions, just reply to this email. I'm here to help!
+        If you have any questions, just reply to this email. I'm here to help!
       </p>
     </div>
     
@@ -180,16 +196,18 @@ Great news, ${data.customerName.split(" ")[0]}!
 
 Your rewritten CV is ready for download. I've restructured it to highlight your impact and make it easy for recruiters to see your value in seconds.
 
-Download your CV here: ${data.downloadUrl}
+View your order and download: ${data.orderUrl}
 
-This download link expires in 7 days.
+Or download directly: ${data.downloadUrl}
 
 Quick tips for your job search:
 - Tailor the summary for each application
 - Match keywords from job descriptions
 - Keep it to 1-2 pages maximum
 
-If you have any questions or need revisions, just reply to this email. I'm here to help!
+Need changes? You can request a revision from your order page: ${data.orderUrl}
+
+If you have any questions, just reply to this email. I'm here to help!
 
 Order Reference: #${data.orderId.slice(0, 8).toUpperCase()}
 

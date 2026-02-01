@@ -43,6 +43,7 @@ const stepSchemas = [
 export function IntakeForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [leadCaptured, setLeadCaptured] = useState(false);
 
   const form = useForm<IntakeFormData>({
     resolver: zodResolver(intakeFormSchema),
@@ -78,6 +79,28 @@ export function IntakeForm() {
   const handleNext = async () => {
     const isValid = await validateCurrentStep();
     if (isValid && currentStep < TOTAL_STEPS) {
+      // Capture lead when moving from Step 1 to Step 2
+      if (currentStep === 1 && !leadCaptured) {
+        const { email, fullName } = form.getValues();
+        if (email) {
+          try {
+            await fetch("/api/capture-lead", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email,
+                source: "form_step1",
+                metadata: { fullName },
+              }),
+            });
+            setLeadCaptured(true);
+          } catch (error) {
+            // Don't block form progression if lead capture fails
+            console.error("Failed to capture lead:", error);
+          }
+        }
+      }
+
       setCurrentStep((prev) => prev + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -118,12 +141,18 @@ export function IntakeForm() {
         body: formData,
       });
 
-      if (response.ok) {
-        // Redirect to success page
-        window.location.href = "/?success=true";
+      const responseData = await response.json();
+
+      if (response.ok && responseData.success) {
+        // Redirect to order confirmation page
+        if (responseData.orderUrl) {
+          window.location.href = responseData.orderUrl;
+        } else {
+          // Fallback to order page without token
+          window.location.href = `/order/${responseData.submissionId}`;
+        }
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Submission failed");
+        throw new Error(responseData.error || "Submission failed");
       }
     } catch (error) {
       console.error("Error submitting form:", error);

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin, isSupabaseConfigured, getSignedUrl, CV_STORAGE_BUCKET } from "@/lib/supabase";
 import { getResend, isResendConfigured, EMAIL_FROM, EMAIL_REPLY_TO } from "@/lib/resend";
 import { getCVDeliveryEmail } from "@/lib/email-templates";
+import { generateOrderUrl } from "@/lib/order-tokens";
 import type { SubmissionStatus } from "@/lib/db/types";
 
 // Helper to send delivery email
@@ -18,11 +19,13 @@ async function sendDeliveryEmail(
 
   try {
     const resend = getResend();
+    const orderUrl = generateOrderUrl(orderId, email);
     const emailContent = getCVDeliveryEmail({
       customerName: name,
       customerEmail: email,
       orderId,
       downloadUrl,
+      orderUrl,
     });
 
     const { error } = await resend.emails.send({

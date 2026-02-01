@@ -41,6 +41,7 @@ export type PaymentStatus =
 export type LeadSource = 
   | 'audit_modal'
   | 'form_abandon'
+  | 'form_step1'
   | 'direct'
   | 'free_audit'
   | 'newsletter'

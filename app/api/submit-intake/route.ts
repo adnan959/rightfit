@@ -6,6 +6,7 @@ import { supabaseAdmin, isSupabaseConfigured, uploadFile, CV_STORAGE_BUCKET } fr
 import { getStripe, isStripeConfigured, CV_REWRITE_PRICE } from "@/lib/stripe";
 import { getResend, isResendConfigured, EMAIL_FROM, EMAIL_REPLY_TO } from "@/lib/resend";
 import { getOrderConfirmationEmail } from "@/lib/email-templates";
+import { generateOrderUrl } from "@/lib/order-tokens";
 import type { SubmissionInsert, CareerStage, TimelineOption, CoverLetterOption } from "@/lib/db/types";
 
 // Fallback: Store submissions in JSON files (when Supabase is not configured)
@@ -55,10 +56,12 @@ async function sendOrderConfirmationEmail(
   email: string,
   name: string,
   orderId: string
-): Promise<boolean> {
+): Promise<{ success: boolean; orderUrl: string }> {
+  const orderUrl = generateOrderUrl(orderId, email);
+  
   if (!isResendConfigured()) {
     console.log("Resend not configured, skipping confirmation email");
-    return false;
+    return { success: false, orderUrl };
   }
 
   try {
@@ -73,6 +76,7 @@ async function sendOrderConfirmationEmail(
         month: "long",
         day: "numeric",
       }),
+      orderUrl,
     });
 
     const { error } = await resend.emails.send({
@@ -86,14 +90,14 @@ async function sendOrderConfirmationEmail(
 
     if (error) {
       console.error("Failed to send confirmation email:", error);
-      return false;
+      return { success: false, orderUrl };
     }
 
     console.log("Confirmation email sent to:", email);
-    return true;
+    return { success: true, orderUrl };
   } catch (error) {
     console.error("Error sending confirmation email:", error);
-    return false;
+    return { success: false, orderUrl };
   }
 }
 
@@ -371,8 +375,8 @@ async function handleSupabaseSubmission(data: {
   // Log activity
   await logActivity(submissionId, 'Order submitted', `New order from ${data.fullName} (${data.email})`);
 
-  // Send confirmation email
-  const emailSent = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId);
+  // Send confirmation email and get order URL
+  const { success: emailSent, orderUrl } = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId);
   if (emailSent) {
     await logActivity(submissionId, 'Confirmation email sent', `Email sent to ${data.email}`);
   }
@@ -388,6 +392,7 @@ async function handleSupabaseSubmission(data: {
   return NextResponse.json({
     success: true,
     submissionId,
+    orderUrl,
     message: "Your CV revamp request has been submitted successfully!",
   });
 }
@@ -469,8 +474,8 @@ async function handleJsonSubmission(data: {
   const submissionPath = join(SUBMISSIONS_DIR, `${submissionId}.json`);
   await writeFile(submissionPath, JSON.stringify(submission, null, 2));
 
-  // Send confirmation email
-  const emailSent = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId);
+  // Send confirmation email and get order URL
+  const { success: emailSent, orderUrl } = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId);
 
   console.log("New intake submission (JSON):", {
     id: submissionId,
@@ -483,6 +488,7 @@ async function handleJsonSubmission(data: {
   return NextResponse.json({
     success: true,
     submissionId,
+    orderUrl,
     message: "Your CV revamp request has been submitted successfully!",
   });
 }

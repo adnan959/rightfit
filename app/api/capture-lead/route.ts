@@ -44,6 +44,8 @@ function mapSourceToEnum(source: string): LeadSource {
       return 'audit_modal';
     case 'form_abandon':
       return 'form_abandon';
+    case 'form_step1':
+      return 'form_step1';
     default:
       return 'direct';
   }
