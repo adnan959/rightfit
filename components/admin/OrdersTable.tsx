@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +42,7 @@ function getPaymentStatus(order: Submission): { label: string; color: string } {
 }
 
 function OrderCard({ order, onStatusChange }: { order: Submission; onStatusChange: (id: string, status: SubmissionStatus) => void }) {
+  const router = useRouter();
   const payment = getPaymentStatus(order);
   
   return (
@@ -83,11 +85,9 @@ function OrderCard({ order, onStatusChange }: { order: Submission; onStatusChang
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem asChild>
-            <Link href={`/admin/orders/${order.id}`}>
-              <Eye className="mr-2 h-4 w-4" />
-              View Details
-            </Link>
+          <DropdownMenuItem onClick={() => router.push(`/admin/orders/${order.id}`)}>
+            <Eye className="mr-2 h-4 w-4" />
+            View Details
           </DropdownMenuItem>
           <DropdownMenuItem>
             <Send className="mr-2 h-4 w-4" />
