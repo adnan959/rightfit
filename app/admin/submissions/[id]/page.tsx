@@ -570,7 +570,6 @@ function CVReviewTab({
               <Button
                 onClick={onAddNote}
                 disabled={isSavingNote || !newNote.trim()}
-                className="bg-coral-500 hover:bg-coral-600"
               >
                 <Plus className="mr-1 h-4 w-4" />
                 Add

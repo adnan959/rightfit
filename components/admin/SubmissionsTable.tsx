@@ -57,9 +57,9 @@ export function SubmissionsTable({
 
   if (isLoading) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white">
+      <div className="rounded-lg border border-border bg-card">
         <div className="flex h-64 items-center justify-center">
-          <div className="text-gray-500">Loading submissions...</div>
+          <div className="text-muted-foreground">Loading submissions...</div>
         </div>
       </div>
     );
@@ -67,64 +67,64 @@ export function SubmissionsTable({
 
   if (submissions.length === 0) {
     return (
-      <div className="rounded-lg border border-gray-200 bg-white">
+      <div className="rounded-lg border border-border bg-card">
         <div className="flex h-64 flex-col items-center justify-center">
-          <AlertCircle className="h-8 w-8 text-gray-400" />
-          <p className="mt-2 text-gray-500">No submissions found</p>
+          <AlertCircle className="h-8 w-8 text-muted-foreground/50" />
+          <p className="mt-2 text-muted-foreground">No submissions found</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white">
+    <div className="rounded-lg border border-border bg-card">
       {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+            <tr className="border-b border-border bg-muted/50">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Customer
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Target Role
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Status
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Priority
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Submitted
               </th>
-              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-border">
             {submissions.map((submission) => (
-              <tr key={submission.id} className="hover:bg-gray-50">
-                <td className="whitespace-nowrap px-4 py-4">
+              <tr key={submission.id} className="hover:bg-muted/30">
+                <td className="whitespace-nowrap px-4 py-3">
                   <div>
-                    <div className="font-medium text-gray-900">
+                    <div className="font-medium text-foreground">
                       {submission.full_name}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground">
                       {submission.email}
                     </div>
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-4 py-4">
-                  <div className="text-sm text-gray-900">
+                <td className="whitespace-nowrap px-4 py-3">
+                  <div className="text-sm text-foreground">
                     {submission.job_titles}
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-muted-foreground">
                     {submission.location}
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-4 py-4">
+                <td className="whitespace-nowrap px-4 py-3">
                   <Select
                     value={submission.status}
                     onValueChange={(value) =>
@@ -151,7 +151,7 @@ export function SubmissionsTable({
                     </SelectContent>
                   </Select>
                 </td>
-                <td className="whitespace-nowrap px-4 py-4">
+                <td className="whitespace-nowrap px-4 py-3">
                   <Badge
                     className={PRIORITY_COLORS[submission.priority]}
                     variant="secondary"
@@ -159,13 +159,13 @@ export function SubmissionsTable({
                     {submission.priority}
                   </Badge>
                 </td>
-                <td className="whitespace-nowrap px-4 py-4">
-                  <div className="flex items-center text-sm text-gray-500">
+                <td className="whitespace-nowrap px-4 py-3">
+                  <div className="flex items-center text-sm text-muted-foreground">
                     <Clock className="mr-1.5 h-4 w-4" />
                     {formatDistanceToNow(submission.created_at)}
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-4 py-4 text-right">
+                <td className="whitespace-nowrap px-4 py-3 text-right">
                   <div className="flex items-center justify-end gap-2">
                     <Link href={`/admin/submissions/${submission.id}`}>
                       <Button variant="outline" size="sm">
@@ -185,9 +185,9 @@ export function SubmissionsTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
-        <div className="text-sm text-gray-500">
-          Showing {submissions.length} of {total} submissions
+      <div className="flex flex-col items-center justify-between gap-3 border-t border-border px-4 py-3 sm:flex-row">
+        <div className="text-xs text-muted-foreground sm:text-sm">
+          {submissions.length} of {total}
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -198,8 +198,8 @@ export function SubmissionsTable({
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span className="text-sm text-gray-600">
-            Page {page} of {totalPages}
+          <span className="text-xs text-muted-foreground sm:text-sm">
+            {page} / {totalPages}
           </span>
           <Button
             variant="outline"

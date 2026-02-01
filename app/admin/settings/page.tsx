@@ -68,15 +68,15 @@ export default function SettingsPage() {
             {integrations.map((integration) => (
               <div
                 key={integration.name}
-                className="flex items-center justify-between rounded-lg border border-gray-200 p-4"
+                className="flex items-center justify-between rounded-lg border border-border p-4"
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
-                    <integration.icon className="h-5 w-5 text-gray-600" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                    <integration.icon className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
                     <h3 className="font-medium">{integration.name}</h3>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {integration.description}
                     </p>
                   </div>
@@ -88,7 +88,7 @@ export default function SettingsPage() {
                       Connected
                     </Badge>
                   ) : (
-                    <Badge className="bg-gray-100 text-gray-600">
+                    <Badge className="bg-muted text-muted-foreground">
                       <XCircle className="mr-1 h-3 w-3" />
                       Not Configured
                     </Badge>
@@ -121,8 +121,8 @@ export default function SettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-lg bg-gray-900 p-4">
-            <pre className="overflow-x-auto text-sm text-gray-100">
+          <div className="rounded-lg bg-foreground p-4">
+            <pre className="overflow-x-auto text-sm text-background">
               <code>
 {`# OpenAI API Key (required for CV grading)
 OPENAI_API_KEY=sk-your-api-key-here
@@ -142,9 +142,9 @@ STRIPE_WEBHOOK_SECRET=whsec_...`}
               </code>
             </pre>
           </div>
-          <p className="mt-4 text-sm text-gray-500">
-            Copy these to your <code className="rounded bg-gray-100 px-1">.env.local</code> file.
-            See <code className="rounded bg-gray-100 px-1">.env.example</code> for a template.
+          <p className="mt-4 text-sm text-muted-foreground">
+            Copy these to your <code className="rounded bg-muted px-1">.env.local</code> file.
+            See <code className="rounded bg-muted px-1">.env.example</code> for a template.
           </p>
         </CardContent>
       </Card>
@@ -159,11 +159,11 @@ STRIPE_WEBHOOK_SECRET=whsec_...`}
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-medium">CV Rewrite Service</h3>
-              <p className="text-sm text-gray-500">Single fixed price</p>
+              <p className="text-sm text-muted-foreground">Single fixed price</p>
             </div>
-            <div className="text-2xl font-bold">$30</div>
+            <div className="text-2xl font-bold text-primary">$30</div>
           </div>
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-muted-foreground">
             Pricing changes require code updates. Future versions will support
             dynamic pricing through the dashboard.
           </p>

@@ -290,7 +290,7 @@ export function FilesSection({
             <Button
               onClick={() => setShowDeliveryConfirm(true)}
               disabled={!canDeliver}
-              className="w-full mt-3 bg-coral-500 hover:bg-coral-600 disabled:bg-gray-200 disabled:text-gray-500"
+              className="w-full mt-3"
             >
               <Send className="mr-2 h-4 w-4" />
               Deliver CV
@@ -338,7 +338,6 @@ export function FilesSection({
             <Button
               onClick={handleDelivery}
               disabled={isDelivering}
-              className="bg-coral-500 hover:bg-coral-600"
             >
               {isDelivering ? (
                 <>

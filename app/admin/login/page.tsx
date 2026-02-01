@@ -47,10 +47,10 @@ function LoginForm() {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md p-6">
       <CardHeader className="text-center">
-        <div className="mx-auto w-12 h-12 bg-coral-100 rounded-full flex items-center justify-center mb-4">
-          <Lock className="w-6 h-6 text-coral-600" />
+        <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+          <Lock className="w-6 h-6 text-primary" />
         </div>
         <CardTitle className="text-2xl">Admin Access</CardTitle>
         <CardDescription>
@@ -60,7 +60,7 @@ function LoginForm() {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive text-sm">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -81,7 +81,7 @@ function LoginForm() {
 
           <Button
             type="submit"
-            className="w-full bg-coral-500 hover:bg-coral-600"
+            className="w-full"
             disabled={loading}
           >
             {loading ? "Signing in..." : "Sign In"}
@@ -94,10 +94,10 @@ function LoginForm() {
 
 function LoginFormFallback() {
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md p-6">
       <CardHeader className="text-center">
-        <div className="mx-auto w-12 h-12 bg-coral-100 rounded-full flex items-center justify-center mb-4">
-          <Lock className="w-6 h-6 text-coral-600" />
+        <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+          <Lock className="w-6 h-6 text-primary" />
         </div>
         <CardTitle className="text-2xl">Admin Access</CardTitle>
         <CardDescription>
@@ -115,7 +115,7 @@ function LoginFormFallback() {
               disabled
             />
           </div>
-          <Button className="w-full bg-coral-500" disabled>
+          <Button className="w-full" disabled>
             Sign In
           </Button>
         </div>
@@ -126,7 +126,7 @@ function LoginFormFallback() {
 
 export default function AdminLoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <Suspense fallback={<LoginFormFallback />}>
         <LoginForm />
       </Suspense>

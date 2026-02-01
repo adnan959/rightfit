@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   FileText,
   CreditCard,
   Users,
   Settings,
-  LogOut,
+  X,
 } from "lucide-react";
 
 const navItems = [
@@ -34,69 +34,84 @@ const navItems = [
   },
 ];
 
-export function AdminNav() {
-  const pathname = usePathname();
-  const router = useRouter();
+interface AdminNavProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
 
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/admin/logout", { method: "POST" });
-      router.push("/admin/login");
-      router.refresh();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
+export function AdminNav({ isOpen, onClose }: AdminNavProps) {
+  const pathname = usePathname();
+
+  const handleNavClick = () => {
+    // Close mobile nav when clicking a link
+    if (onClose) onClose();
   };
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-gray-200 bg-white">
-      <div className="flex h-full flex-col">
-        {/* Logo */}
-        <div className="flex h-16 items-center border-b border-gray-200 px-6">
-          <Link href="/admin" className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gray-900">ApplyBetter</span>
-            <span className="rounded bg-coral-100 px-2 py-0.5 text-xs font-medium text-coral-700">
-              Admin
-            </span>
-          </Link>
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "fixed left-0 top-0 z-50 h-screen w-64 border-r border-border bg-card transition-transform duration-200 ease-in-out",
+          "lg:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="flex h-full flex-col">
+          {/* Logo */}
+          <div className="flex h-14 items-center justify-between border-b border-border px-4">
+            <Link href="/admin" className="flex items-center gap-2" onClick={handleNavClick}>
+              <span className="text-lg font-bold text-foreground">ApplyBetter</span>
+              <span className="rounded bg-primary/10 px-1.5 py-0.5 text-xs font-medium text-primary">
+                Admin
+              </span>
+            </Link>
+            {/* Mobile close button */}
+            <button
+              onClick={onClose}
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted text-foreground hover:bg-primary/10 hover:text-primary lg:hidden"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 space-y-1 px-3 py-4">
+            {navItems.map((item) => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/admin" && pathname.startsWith(item.href));
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={handleNavClick}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                    isActive
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
         </div>
-
-        {/* Navigation */}
-        <nav className="flex-1 space-y-1 px-3 py-4">
-          {navItems.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== "/admin" && pathname.startsWith(item.href));
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-coral-50 text-coral-700"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                )}
-              >
-                <item.icon className="h-5 w-5" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Footer */}
-        <div className="border-t border-gray-200 p-3">
-          <button
-            onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-          >
-            <LogOut className="h-5 w-5" />
-            Sign Out
-          </button>
-        </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }

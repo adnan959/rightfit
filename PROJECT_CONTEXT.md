@@ -102,9 +102,15 @@ applybetter/
 │   ├── form/                 # 8 form step components
 │   ├── admin/                # Admin components
 │   │   ├── AdminNav.tsx      # Sidebar navigation
-│   │   ├── AdminShell.tsx    # Page wrapper
+│   │   ├── AdminShell.tsx    # Page wrapper + header with logout
+│   │   ├── AdminTabs.tsx     # Tab navigation component
 │   │   ├── StatsCard.tsx     # Dashboard stats
-│   │   └── SubmissionsTable.tsx
+│   │   ├── OrdersTable.tsx   # Orders list with ellipsis menus
+│   │   ├── CustomerCard.tsx  # Customer info sidebar
+│   │   ├── SubmissionCard.tsx # Submission details
+│   │   ├── FilesSection.tsx  # CV upload/download
+│   │   ├── OrderActions.tsx  # Send message/refund modals
+│   │   └── TimelineEvent.tsx # Order timeline components
 │   └── ui/                   # shadcn/ui components
 ├── lib/
 │   ├── openai.ts             # OpenAI client (lazy init)

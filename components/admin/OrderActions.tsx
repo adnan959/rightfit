@@ -247,7 +247,7 @@ export function OrderActions({
             <Button variant="outline" onClick={() => setShowSendMessage(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSendMessage} className="bg-coral-500 hover:bg-coral-600">
+            <Button onClick={handleSendMessage}>
               <Send className="mr-2 h-4 w-4" />
               Send Message
             </Button>
@@ -310,7 +310,7 @@ export function OrderActions({
             <Button variant="outline" onClick={() => setShowRequestInfo(false)}>
               Cancel
             </Button>
-            <Button onClick={handleRequestInfo} className="bg-coral-500 hover:bg-coral-600">
+            <Button onClick={handleRequestInfo}>
               <Send className="mr-2 h-4 w-4" />
               Send Request
             </Button>

@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-02-01] - Admin UI Polish
+
+### Changed
+
+#### Header & Navigation
+- **Sign Out button moved** from sidebar footer to top-right header (next to page actions)
+- **Header alignment** - Page titles now horizontally align with the sidebar logo line
+- **Title size reduced** from `text-xl/2xl` to `text-lg` for cleaner proportions
+- **Fixed header height** to match sidebar logo height (`h-14`)
+
+#### Orders Index (`/admin/orders`)
+- **Tighter row spacing** - Reduced padding (`px-3 py-2.5`) and gap between rows (`space-y-2`)
+- **Shadow styling** - Added `shadow-sm` with `hover:shadow-md` for depth
+- **Inlined timestamp** - "3h ago" now appears on the same line as role and email
+- **Ellipsis menu** replaces arrow - Contains "View Details", "Send Message", "Mark Delivered"
+- **Smaller avatars** - Reduced from 48px to 40px
+
+#### Order Detail (`/admin/orders/[id]`)
+- **Header extends to edges** with negative margins for full-width feel
+- **Dividing line** between back button and order title
+- **Smaller action buttons** with `size="sm"`
+
+### Technical Notes
+- AdminShell now handles logout globally (removed from AdminNav)
+- OrdersTable passes `onStatusChange` to individual cards for inline actions
+
+---
+
 ## [2026-02-01] - Orders Workflow Redesign
 
 ### Added

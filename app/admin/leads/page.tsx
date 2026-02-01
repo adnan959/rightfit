@@ -165,12 +165,12 @@ export default function LeadsPage() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex h-32 items-center justify-center text-gray-500">
+            <div className="flex h-32 items-center justify-center text-muted-foreground">
               Loading leads...
             </div>
           ) : leads.length === 0 ? (
-            <div className="flex h-32 flex-col items-center justify-center text-gray-500">
-              <Users className="h-8 w-8 text-gray-300" />
+            <div className="flex h-32 flex-col items-center justify-center text-muted-foreground">
+              <Users className="h-8 w-8 text-muted-foreground/50" />
               <p className="mt-2">No leads found</p>
             </div>
           ) : (
@@ -178,31 +178,31 @@ export default function LeadsPage() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-gray-50">
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <tr className="border-b border-border bg-muted/50">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Email
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Source
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Status
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Captured
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-border">
                     {leads.map((lead) => (
-                      <tr key={lead.id} className="hover:bg-gray-50">
+                      <tr key={lead.id} className="hover:bg-muted/30">
                         <td className="px-4 py-4">
                           <a
                             href={`mailto:${lead.email}`}
-                            className="flex items-center text-coral-600 hover:underline"
+                            className="flex items-center text-primary hover:underline"
                           >
                             {lead.email}
                             <ExternalLink className="ml-1 h-3 w-3" />
@@ -219,12 +219,12 @@ export default function LeadsPage() {
                               Converted
                             </Badge>
                           ) : (
-                            <Badge className="bg-gray-100 text-gray-800">
+                            <Badge className="bg-muted text-muted-foreground">
                               Not Converted
                             </Badge>
                           )}
                         </td>
-                        <td className="px-4 py-4 text-sm text-gray-500">
+                        <td className="px-4 py-4 text-sm text-muted-foreground">
                           {formatDistanceToNow(
                             lead.created_at || lead.timestamp || ""
                           )}
@@ -240,7 +240,7 @@ export default function LeadsPage() {
                             </Button>
                           )}
                           {lead.converted && lead.converted_at && (
-                            <span className="text-xs text-gray-400">
+                            <span className="text-xs text-muted-foreground">
                               {formatDateTime(lead.converted_at)}
                             </span>
                           )}
@@ -252,9 +252,9 @@ export default function LeadsPage() {
               </div>
 
               {/* Pagination */}
-              <div className="mt-4 flex items-center justify-between border-t border-gray-200 pt-4">
-                <span className="text-sm text-gray-500">
-                  Showing {leads.length} of {total} leads
+              <div className="mt-4 flex flex-col items-center justify-between gap-3 border-t border-border pt-4 sm:flex-row">
+                <span className="text-xs text-muted-foreground sm:text-sm">
+                  {leads.length} of {total}
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
@@ -265,8 +265,8 @@ export default function LeadsPage() {
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  <span className="text-sm text-gray-600">
-                    Page {page} of {totalPages}
+                  <span className="text-xs text-muted-foreground sm:text-sm">
+                    {page} / {totalPages}
                   </span>
                   <Button
                     variant="outline"

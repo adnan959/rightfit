@@ -7,13 +7,6 @@ import { AdminShell } from "@/components/admin/AdminShell";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -33,8 +26,6 @@ import {
 import {
   type SubmissionWithRelations,
   type SubmissionStatus,
-  STATUS_LABELS,
-  STATUS_COLORS,
 } from "@/lib/db/types";
 import { formatDateTime, formatDistanceToNow } from "@/lib/utils";
 import { getDummyOrderById, getCVVersions, type CVVersion } from "@/lib/dummy-data";
@@ -285,100 +276,78 @@ export default function OrderDetailPage() {
   return (
     <AdminShell title="">
       {/* Header */}
-      <div className="mb-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex items-start gap-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push("/admin/orders")}
-            className="mt-0.5"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold text-gray-900">
+      <div className="-mx-4 -mt-4 sm:-mx-6 sm:-mt-6 mb-4 border-b border-border bg-card px-4 py-3 sm:px-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push("/admin/orders")}
+              className="-ml-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div className="h-5 w-px bg-border" />
+            <div>
+              <h1 className="text-lg font-bold text-foreground">
                 Order #{id.slice(0, 8)}
               </h1>
-              <Badge className={STATUS_COLORS[order.status]} variant="secondary">
-                {STATUS_LABELS[order.status]}
-              </Badge>
+              <p className="text-xs text-muted-foreground">
+                {formatDateTime(order.created_at)} ({formatDistanceToNow(order.created_at)})
+              </p>
             </div>
-            <p className="text-sm text-gray-500">
-              {formatDateTime(order.created_at)} ({formatDistanceToNow(order.created_at)})
-            </p>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          {/* Status Dropdown */}
-          <Select
-            value={order.status}
-            onValueChange={(v) => handleStatusChange(v as SubmissionStatus)}
-          >
-            <SelectTrigger className="w-[140px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(STATUS_LABELS).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            {/* Actions Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  Actions
+                  <ChevronDown className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setShowSendMessage(true)}>
+                  <Send className="mr-2 h-4 w-4" />
+                  Send Message
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setShowRequestInfo(true)}>
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Request Info
+                </DropdownMenuItem>
+                {order.status === "delivered" && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => handleStatusChange("in_progress")}>
+                      <RotateCcw className="mr-2 h-4 w-4" />
+                      Request Revision
+                    </DropdownMenuItem>
+                  </>
+                )}
+                {order.status !== "refunded" && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => setShowRefundModal(true)}
+                      className="text-red-600"
+                    >
+                      <DollarSign className="mr-2 h-4 w-4" />
+                      Refund Order
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          {/* Actions Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                Actions
-                <ChevronDown className="ml-2 h-4 w-4" />
+            {/* Close Order Button */}
+            {!isClosed && (
+              <Button size="sm" onClick={handleCloseOrder}>
+                <CheckCircle className="mr-2 h-4 w-4" />
+                Close Order
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setShowSendMessage(true)}>
-                <Send className="mr-2 h-4 w-4" />
-                Send Message
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setShowRequestInfo(true)}>
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Request Info
-              </DropdownMenuItem>
-              {order.status === "delivered" && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => handleStatusChange("in_progress")}>
-                    <RotateCcw className="mr-2 h-4 w-4" />
-                    Request Revision
-                  </DropdownMenuItem>
-                </>
-              )}
-              {order.status !== "refunded" && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => setShowRefundModal(true)}
-                    className="text-red-600"
-                  >
-                    <DollarSign className="mr-2 h-4 w-4" />
-                    Refund Order
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Close Order Button */}
-          {!isClosed && (
-            <Button
-              onClick={handleCloseOrder}
-              className="bg-coral-500 hover:bg-coral-600"
-            >
-              <CheckCircle className="mr-2 h-4 w-4" />
-              Close Order
-            </Button>
-          )}
+            )}
+          </div>
         </div>
       </div>
 

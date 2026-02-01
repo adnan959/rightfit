@@ -117,7 +117,7 @@ export default function BillingPage() {
       pending: "bg-yellow-100 text-yellow-800",
       paid: "bg-green-100 text-green-800",
       refunded: "bg-red-100 text-red-800",
-      failed: "bg-gray-100 text-gray-800",
+      failed: "bg-muted text-muted-foreground",
     };
     return <Badge className={colors[status]}>{status}</Badge>;
   };
@@ -197,12 +197,12 @@ export default function BillingPage() {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <div className="flex h-32 items-center justify-center text-gray-500">
+            <div className="flex h-32 items-center justify-center text-muted-foreground">
               Loading payments...
             </div>
           ) : payments.length === 0 ? (
-            <div className="flex h-32 flex-col items-center justify-center text-gray-500">
-              <CreditCard className="h-8 w-8 text-gray-300" />
+            <div className="flex h-32 flex-col items-center justify-center text-muted-foreground">
+              <CreditCard className="h-8 w-8 text-muted-foreground/50" />
               <p className="mt-2">No payments found</p>
               <p className="text-sm">
                 Payments will appear here once Supabase is configured
@@ -213,43 +213,43 @@ export default function BillingPage() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200 bg-gray-50">
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                    <tr className="border-b border-border bg-muted/50">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Customer
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Amount
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Status
                       </th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Date
                       </th>
-                      <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         Actions
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-border">
                     {payments.map((payment) => (
-                      <tr key={payment.id} className="hover:bg-gray-50">
+                      <tr key={payment.id} className="hover:bg-muted/30">
                         <td className="px-4 py-4">
                           {payment.submissions ? (
                             <div>
-                              <p className="font-medium text-gray-900">
+                              <p className="font-medium text-foreground">
                                 {payment.submissions.full_name}
                               </p>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-muted-foreground">
                                 {payment.submissions.email}
                               </p>
                             </div>
                           ) : (
-                            <span className="text-gray-400">-</span>
+                            <span className="text-muted-foreground">-</span>
                           )}
                         </td>
                         <td className="px-4 py-4">
-                          <span className="font-medium text-gray-900">
+                          <span className="font-medium text-foreground">
                             {formatCurrency(payment.amount)}
                           </span>
                           {payment.refund_amount && (
@@ -259,7 +259,7 @@ export default function BillingPage() {
                           )}
                         </td>
                         <td className="px-4 py-4">{getStatusBadge(payment.status)}</td>
-                        <td className="px-4 py-4 text-sm text-gray-500">
+                        <td className="px-4 py-4 text-sm text-muted-foreground">
                           {formatDateTime(payment.created_at)}
                         </td>
                         <td className="px-4 py-4 text-right">
@@ -280,9 +280,9 @@ export default function BillingPage() {
               </div>
 
               {/* Pagination */}
-              <div className="mt-4 flex items-center justify-between border-t border-gray-200 pt-4">
-                <span className="text-sm text-gray-500">
-                  Showing {payments.length} of {total} payments
+              <div className="mt-4 flex flex-col items-center justify-between gap-3 border-t border-border pt-4 sm:flex-row">
+                <span className="text-xs text-muted-foreground sm:text-sm">
+                  {payments.length} of {total}
                 </span>
                 <div className="flex items-center gap-2">
                   <Button
@@ -293,8 +293,8 @@ export default function BillingPage() {
                   >
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
-                  <span className="text-sm text-gray-600">
-                    Page {page} of {totalPages}
+                  <span className="text-xs text-muted-foreground sm:text-sm">
+                    {page} / {totalPages}
                   </span>
                   <Button
                     variant="outline"

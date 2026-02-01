@@ -140,7 +140,7 @@ export default function AdminDashboardPage() {
       }
     >
       {/* Stats Grid */}
-      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:gap-4 lg:grid-cols-4">
         <StatsCard
           title="Total Submissions"
           value={stats?.total_submissions ?? "-"}
@@ -171,18 +171,18 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Filters */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
         <form onSubmit={handleSearch} className="flex gap-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <div className="relative flex-1 sm:flex-initial">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search by name or email..."
+              placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-64 pl-9"
+              className="w-full pl-9 sm:w-64"
             />
           </div>
-          <Button type="submit" variant="secondary">
+          <Button type="submit" variant="secondary" size="sm" className="sm:size-default">
             Search
           </Button>
         </form>
@@ -194,7 +194,7 @@ export default function AdminDashboardPage() {
             setPage(1);
           }}
         >
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-full sm:w-[180px]">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>

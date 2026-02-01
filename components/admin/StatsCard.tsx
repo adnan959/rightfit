@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { LucideIcon } from "lucide-react";
 
 interface StatsCardProps {
@@ -25,32 +25,30 @@ export function StatsCard({
   className,
 }: StatsCardProps) {
   return (
-    <Card className={cn(className)}>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-500">{title}</p>
-            <p className="mt-1 text-3xl font-semibold text-gray-900">{value}</p>
-            {description && (
-              <p className="mt-1 text-sm text-gray-500">{description}</p>
-            )}
-            {trend && (
-              <p
-                className={cn(
-                  "mt-1 text-sm",
-                  trend.isPositive ? "text-green-600" : "text-red-600"
-                )}
-              >
-                {trend.isPositive ? "+" : "-"}
-                {Math.abs(trend.value)}% from last week
-              </p>
-            )}
-          </div>
-          <div className="rounded-lg bg-coral-50 p-3">
-            <Icon className="h-6 w-6 text-coral-600" />
-          </div>
+    <Card className={cn("p-3 sm:p-4", className)}>
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-xs font-medium text-muted-foreground sm:text-sm">{title}</p>
+          <p className="mt-0.5 text-lg font-semibold text-foreground sm:mt-1 sm:text-2xl">{value}</p>
+          {description && (
+            <p className="mt-0.5 hidden text-xs text-muted-foreground sm:block">{description}</p>
+          )}
+          {trend && (
+            <p
+              className={cn(
+                "mt-0.5 text-xs",
+                trend.isPositive ? "text-green-600" : "text-red-600"
+              )}
+            >
+              {trend.isPositive ? "+" : "-"}
+              {Math.abs(trend.value)}%
+            </p>
+          )}
         </div>
-      </CardContent>
+        <div className="rounded-lg bg-primary/10 p-2 sm:p-2.5">
+          <Icon className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
+        </div>
+      </div>
     </Card>
   );
 }
