@@ -55,9 +55,10 @@ async function logActivity(submissionId: string, action: string, description?: s
 async function sendOrderConfirmationEmail(
   email: string,
   name: string,
-  orderId: string
+  orderId: string,
+  baseUrl: string
 ): Promise<{ success: boolean; orderUrl: string }> {
-  const orderUrl = generateOrderUrl(orderId, email);
+  const orderUrl = generateOrderUrl(orderId, email, baseUrl);
   
   if (!isResendConfigured()) {
     console.log("Resend not configured, skipping confirmation email");
@@ -103,6 +104,11 @@ async function sendOrderConfirmationEmail(
 
 export async function POST(request: NextRequest) {
   try {
+    // Get base URL from request headers for proper URL generation
+    const host = request.headers.get("host") || "localhost:3000";
+    const protocol = host.includes("localhost") ? "http" : "https";
+    const baseUrl = `${protocol}://${host}`;
+    
     const formData = await request.formData();
 
     // Extract form fields
@@ -193,6 +199,7 @@ export async function POST(request: NextRequest) {
         coverLetterFile,
         paymentIntentId,
         verifiedPayment,
+        baseUrl,
       });
     } else {
       return await handleJsonSubmission({
@@ -215,6 +222,7 @@ export async function POST(request: NextRequest) {
         coverLetterFile,
         paymentIntentId,
         verifiedPayment,
+        baseUrl,
       });
     }
   } catch (error) {
@@ -252,6 +260,7 @@ async function handleSupabaseSubmission(data: {
   coverLetterFile: File | null;
   paymentIntentId: string | null;
   verifiedPayment: boolean;
+  baseUrl: string;
 }) {
   if (!supabaseAdmin) {
     throw new Error("Supabase not configured");
@@ -376,7 +385,7 @@ async function handleSupabaseSubmission(data: {
   await logActivity(submissionId, 'Order submitted', `New order from ${data.fullName} (${data.email})`);
 
   // Send confirmation email and get order URL
-  const { success: emailSent, orderUrl } = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId);
+  const { success: emailSent, orderUrl } = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId, data.baseUrl);
   if (emailSent) {
     await logActivity(submissionId, 'Confirmation email sent', `Email sent to ${data.email}`);
   }
@@ -418,6 +427,7 @@ async function handleJsonSubmission(data: {
   coverLetterFile: File | null;
   paymentIntentId: string | null;
   verifiedPayment: boolean;
+  baseUrl: string;
 }) {
   // Generate submission ID
   const submissionId = `sub_${Date.now()}_${Math.random().toString(36).substring(7)}`;
@@ -475,7 +485,7 @@ async function handleJsonSubmission(data: {
   await writeFile(submissionPath, JSON.stringify(submission, null, 2));
 
   // Send confirmation email and get order URL
-  const { success: emailSent, orderUrl } = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId);
+  const { success: emailSent, orderUrl } = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId, data.baseUrl);
 
   console.log("New intake submission (JSON):", {
     id: submissionId,
