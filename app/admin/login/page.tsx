@@ -11,7 +11,7 @@ import { AlertCircle, Lock } from "lucide-react";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/admin";
+  const redirect = searchParams.get("redirect") || "/admin/orders";
 
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
