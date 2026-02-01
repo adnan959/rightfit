@@ -19,5 +19,8 @@ export function isResendConfigured(): boolean {
 }
 
 // Email sender configuration
-export const EMAIL_FROM = "ApplyBetter <noreply@applybetter.com>";
-export const EMAIL_REPLY_TO = "hello@applybetter.com";
+// Use custom domain if configured, otherwise fall back to Resend's default
+// To use custom domain, add RESEND_FROM_EMAIL to your environment variables
+// IMPORTANT: Custom domains must be verified in Resend dashboard first
+export const EMAIL_FROM = process.env.RESEND_FROM_EMAIL || "ApplyBetter <onboarding@resend.dev>";
+export const EMAIL_REPLY_TO = process.env.RESEND_REPLY_TO || "hello@applybetter.com";
