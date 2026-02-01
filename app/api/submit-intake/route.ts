@@ -10,7 +10,10 @@ import { generateOrderUrl } from "@/lib/order-tokens";
 import type { SubmissionInsert, CareerStage, TimelineOption, CoverLetterOption } from "@/lib/db/types";
 
 // Fallback: Store submissions in JSON files (when Supabase is not configured)
-const SUBMISSIONS_DIR = join(process.cwd(), "data", "submissions");
+// On Vercel, use /tmp directory since the file system is read-only
+const SUBMISSIONS_DIR = process.env.VERCEL 
+  ? join("/tmp", "submissions")
+  : join(process.cwd(), "data", "submissions");
 
 interface IntakeSubmission {
   id: string;
@@ -159,8 +162,16 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!fullName || !email || !jobTitles || !careerStage || !timeline || !location) {
+      const missingFields = [];
+      if (!fullName) missingFields.push('fullName');
+      if (!email) missingFields.push('email');
+      if (!jobTitles) missingFields.push('jobTitles');
+      if (!careerStage) missingFields.push('careerStage');
+      if (!timeline) missingFields.push('timeline');
+      if (!location) missingFields.push('location');
+      console.error("Missing required fields:", missingFields);
       return NextResponse.json(
-        { error: "Missing required fields" },
+        { error: `Missing required fields: ${missingFields.join(', ')}`, success: false },
         { status: 400 }
       );
     }
@@ -227,12 +238,14 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error("Error processing intake submission:", error);
+    // Include more details in error response for debugging
+    const errorMessage = error instanceof Error ? error.message : "Failed to process submission";
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error("Error details:", { message: errorMessage, stack: errorStack });
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Failed to process submission",
+        error: errorMessage,
+        success: false,
       },
       { status: 500 }
     );
@@ -299,6 +312,7 @@ async function handleSupabaseSubmission(data: {
   };
 
   // Insert submission
+  console.log("Attempting to insert submission:", { email: data.email, fullName: data.fullName });
   const { data: submission, error: insertError } = await supabaseAdmin
     .from('submissions')
     .insert(submissionData)
@@ -307,8 +321,10 @@ async function handleSupabaseSubmission(data: {
 
   if (insertError || !submission) {
     console.error("Supabase insert error:", insertError);
-    throw new Error("Failed to create submission");
+    console.error("Submission data that failed:", JSON.stringify(submissionData, null, 2));
+    throw new Error(`Failed to create submission: ${insertError?.message || 'Unknown error'}`);
   }
+  console.log("Submission created successfully:", submission.id);
 
   const submissionId = submission.id;
 

@@ -156,7 +156,8 @@ export function IntakeForm() {
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("There was an error submitting your request. Please try again or contact support.");
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      alert(`There was an error submitting your request: ${errorMessage}. Please try again or contact support.`);
     } finally {
       setIsSubmitting(false);
     }
