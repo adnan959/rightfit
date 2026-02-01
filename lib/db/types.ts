@@ -1,4 +1,4 @@
-// Database types for Rightfit
+// Database types for ApplyBetter
 // These match the Supabase schema defined in schema.sql
 
 export type SubmissionStatus = 

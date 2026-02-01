@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
   FileText,
   CreditCard,
   Users,
@@ -14,13 +13,8 @@ import {
 
 const navItems = [
   {
-    label: "Dashboard",
-    href: "/admin",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Submissions",
-    href: "/admin/submissions",
+    label: "Orders",
+    href: "/admin/orders",
     icon: FileText,
   },
   {
@@ -60,7 +54,7 @@ export function AdminNav() {
         {/* Logo */}
         <div className="flex h-16 items-center border-b border-gray-200 px-6">
           <Link href="/admin" className="flex items-center gap-2">
-            <span className="text-xl font-bold text-gray-900">Rightfit</span>
+            <span className="text-xl font-bold text-gray-900">ApplyBetter</span>
             <span className="rounded bg-coral-100 px-2 py-0.5 text-xs font-medium text-coral-700">
               Admin
             </span>

@@ -116,7 +116,6 @@ export default function LeadsPage() {
   return (
     <AdminShell
       title="Leads"
-      description="Email captures from free audits and form abandons"
     >
       {/* Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-3">
@@ -139,7 +138,7 @@ export default function LeadsPage() {
       </div>
 
       {/* Filters */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-semibold">All Leads</h2>
         <Select
           value={filter}
@@ -179,28 +178,28 @@ export default function LeadsPage() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="pb-3 text-left text-sm font-medium text-gray-500">
+                    <tr className="border-b border-gray-200 bg-gray-50">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                         Email
                       </th>
-                      <th className="pb-3 text-left text-sm font-medium text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                         Source
                       </th>
-                      <th className="pb-3 text-left text-sm font-medium text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                         Status
                       </th>
-                      <th className="pb-3 text-left text-sm font-medium text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                         Captured
                       </th>
-                      <th className="pb-3 text-right text-sm font-medium text-gray-500">
+                      <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {leads.map((lead) => (
-                      <tr key={lead.id}>
-                        <td className="py-4">
+                      <tr key={lead.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-4">
                           <a
                             href={`mailto:${lead.email}`}
                             className="flex items-center text-coral-600 hover:underline"
@@ -209,12 +208,12 @@ export default function LeadsPage() {
                             <ExternalLink className="ml-1 h-3 w-3" />
                           </a>
                         </td>
-                        <td className="py-4">
+                        <td className="px-4 py-4">
                           <Badge variant="outline">
                             {SOURCE_LABELS[lead.source] || lead.source}
                           </Badge>
                         </td>
-                        <td className="py-4">
+                        <td className="px-4 py-4">
                           {lead.converted ? (
                             <Badge className="bg-green-100 text-green-800">
                               Converted
@@ -225,12 +224,12 @@ export default function LeadsPage() {
                             </Badge>
                           )}
                         </td>
-                        <td className="py-4 text-sm text-gray-500">
+                        <td className="px-4 py-4 text-sm text-gray-500">
                           {formatDistanceToNow(
                             lead.created_at || lead.timestamp || ""
                           )}
                         </td>
-                        <td className="py-4 text-right">
+                        <td className="px-4 py-4 text-right">
                           {!lead.converted && (
                             <Button
                               variant="outline"

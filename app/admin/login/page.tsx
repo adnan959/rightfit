@@ -54,7 +54,7 @@ function LoginForm() {
         </div>
         <CardTitle className="text-2xl">Admin Access</CardTitle>
         <CardDescription>
-          Enter your password to access the Rightfit backoffice
+          Enter your password to access the ApplyBetter backoffice
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -101,7 +101,7 @@ function LoginFormFallback() {
         </div>
         <CardTitle className="text-2xl">Admin Access</CardTitle>
         <CardDescription>
-          Enter your password to access the Rightfit backoffice
+          Enter your password to access the ApplyBetter backoffice
         </CardDescription>
       </CardHeader>
       <CardContent>

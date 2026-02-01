@@ -44,7 +44,7 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
   
-  /* Custom colors for Rightfit warm theme */
+  /* Custom colors for ApplyBetter warm theme */
   --color-coral: var(--coral);
   --color-coral-dark: var(--coral-dark);
   --color-cream: var(--cream);
@@ -56,7 +56,7 @@
 :root {
   --radius: 0.625rem;
   
-  /* Rightfit Warm Color Palette */
+  /* ApplyBetter Warm Color Palette */
   --coral: #FF6B6B;
   --coral-dark: #E55A5A;
   --cream: #FFFBF5;
@@ -132,7 +132,7 @@
   }
 }
 
-/* Custom utility classes for Rightfit */
+/* Custom utility classes for ApplyBetter */
 @layer utilities {
   .text-balance {
     text-wrap: balance;

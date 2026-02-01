@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Rightfit Admin",
-  description: "Rightfit backoffice administration",
+  title: "ApplyBetter Admin",
+  description: "ApplyBetter backoffice administration",
 };
 
 export default function AdminLayout({

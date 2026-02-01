@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const ADMIN_SESSION_COOKIE = "rightfit_admin_session";
+const ADMIN_SESSION_COOKIE = "applybetter_admin_session";
 
 export async function POST() {
   const response = NextResponse.json({

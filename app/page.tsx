@@ -67,7 +67,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="py-8 px-4 border-t border-border">
         <div className="max-w-3xl mx-auto text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Rightfit. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} ApplyBetter. All rights reserved.</p>
           <p className="mt-2">
             Built with care for job seekers who deserve better.
           </p>

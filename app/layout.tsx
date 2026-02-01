@@ -8,10 +8,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://rightfit-six.vercel.app"),
+  metadataBase: new URL("https://applybetter.vercel.app"),
   title: {
-    default: "Rightfit | $30 CV Rewrite That Gets You Interviews",
-    template: "%s | Rightfit",
+    default: "ApplyBetter | $30 CV Rewrite That Gets You Interviews",
+    template: "%s | ApplyBetter",
   },
   description:
     "Your CV is costing you interviews. I rewrite your CV so your impact is obvious in seconds. $30, ready to send in 48-96 hours.",
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     "CV makeover",
     "job application help",
   ],
-  authors: [{ name: "Rightfit" }],
-  creator: "Rightfit",
-  publisher: "Rightfit",
+  authors: [{ name: "ApplyBetter" }],
+  creator: "ApplyBetter",
+  publisher: "ApplyBetter",
   robots: {
     index: true,
     follow: true,
@@ -44,9 +44,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://rightfit-six.vercel.app",
-    siteName: "Rightfit",
-    title: "Rightfit | $30 CV Rewrite That Gets You Interviews",
+    url: "https://applybetter.vercel.app",
+    siteName: "ApplyBetter",
+    title: "ApplyBetter | $30 CV Rewrite That Gets You Interviews",
     description:
       "Your CV is costing you interviews. I rewrite your CV so your impact is obvious in seconds.",
     images: [
@@ -54,13 +54,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Rightfit - $30 CV Rewrite Service",
+        alt: "ApplyBetter - $30 CV Rewrite Service",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Rightfit | $30 CV Rewrite That Gets You Interviews",
+    title: "ApplyBetter | $30 CV Rewrite That Gets You Interviews",
     description:
       "Your CV is costing you interviews. I rewrite your CV so your impact is obvious in seconds.",
     images: ["/og-image.png"],

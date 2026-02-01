@@ -27,7 +27,7 @@ export function Navbar() {
             href="/"
             className="text-2xl font-bold text-coral hover:text-coral-dark transition-colors"
           >
-            Rightfit
+            ApplyBetter
           </Link>
 
           {/* Desktop Navigation */}

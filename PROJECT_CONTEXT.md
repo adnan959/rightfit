@@ -1,8 +1,8 @@
-# Rightfit - Project Context
+# ApplyBetter - Project Context
 
 ## What This Is
 
-Rightfit is a $30 CV rewrite service targeting job seekers who are qualified but getting ghosted. The founder is a recruiter with Fortune 500 experience who has been fixing CVs informally for years.
+ApplyBetter is a $30 CV rewrite service targeting job seekers who are qualified but getting ghosted. The founder is a recruiter with Fortune 500 experience who has been fixing CVs informally for years.
 
 **Core Value Prop**: "I rewrite your CV so your impact is obvious in seconds."
 
@@ -66,7 +66,7 @@ Rightfit is a $30 CV rewrite service targeting job seekers who are qualified but
 
 ### Key Files
 ```
-rightfit/
+applybetter/
 ├── CHANGELOG.md              # Change tracking
 ├── PROJECT_CONTEXT.md        # This file
 ├── .env.example              # Environment variables template

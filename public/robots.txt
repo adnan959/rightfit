@@ -1,11 +1,11 @@
-# Rightfit - CV Rewrite Service
-# https://rightfit-six.vercel.app
+# ApplyBetter - CV Rewrite Service
+# https://applybetter.vercel.app
 
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://rightfit-six.vercel.app/sitemap.xml
+Sitemap: https://applybetter.vercel.app/sitemap.xml
 
 # Disallow admin/api routes from indexing
 Disallow: /api/

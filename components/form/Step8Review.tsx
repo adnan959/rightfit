@@ -115,7 +115,7 @@ export function Step8Review({ form, onSubmit, isSubmitting }: Step8Props) {
           {isSubmitting ? "Processing..." : "Start My CV Revamp"}
         </Button>
         <p className="text-sm text-muted-foreground">
-          Questions? Reach out at hello@rightfit.com
+          Questions? Reach out at hello@applybetter.com
         </p>
       </div>
     </div>

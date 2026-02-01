@@ -97,7 +97,6 @@ export default function SubmissionsPage() {
   return (
     <AdminShell
       title="Submissions"
-      description="All CV rewrite requests"
       actions={
         <Button
           variant="outline"

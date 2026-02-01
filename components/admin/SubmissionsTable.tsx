@@ -83,22 +83,22 @@ export function SubmissionsTable({
         <table className="w-full">
           <thead>
             <tr className="border-b border-gray-200 bg-gray-50">
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                 Customer
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                 Target Role
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                 Priority
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                 Submitted
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                 Actions
               </th>
             </tr>
@@ -106,7 +106,7 @@ export function SubmissionsTable({
           <tbody className="divide-y divide-gray-200">
             {submissions.map((submission) => (
               <tr key={submission.id} className="hover:bg-gray-50">
-                <td className="whitespace-nowrap px-6 py-4">
+                <td className="whitespace-nowrap px-4 py-4">
                   <div>
                     <div className="font-medium text-gray-900">
                       {submission.full_name}
@@ -116,7 +116,7 @@ export function SubmissionsTable({
                     </div>
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-6 py-4">
+                <td className="whitespace-nowrap px-4 py-4">
                   <div className="text-sm text-gray-900">
                     {submission.job_titles}
                   </div>
@@ -124,7 +124,7 @@ export function SubmissionsTable({
                     {submission.location}
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-6 py-4">
+                <td className="whitespace-nowrap px-4 py-4">
                   <Select
                     value={submission.status}
                     onValueChange={(value) =>
@@ -151,7 +151,7 @@ export function SubmissionsTable({
                     </SelectContent>
                   </Select>
                 </td>
-                <td className="whitespace-nowrap px-6 py-4">
+                <td className="whitespace-nowrap px-4 py-4">
                   <Badge
                     className={PRIORITY_COLORS[submission.priority]}
                     variant="secondary"
@@ -159,13 +159,13 @@ export function SubmissionsTable({
                     {submission.priority}
                   </Badge>
                 </td>
-                <td className="whitespace-nowrap px-6 py-4">
+                <td className="whitespace-nowrap px-4 py-4">
                   <div className="flex items-center text-sm text-gray-500">
                     <Clock className="mr-1.5 h-4 w-4" />
                     {formatDistanceToNow(submission.created_at)}
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-6 py-4 text-right">
+                <td className="whitespace-nowrap px-4 py-4 text-right">
                   <div className="flex items-center justify-end gap-2">
                     <Link href={`/admin/submissions/${submission.id}`}>
                       <Button variant="outline" size="sm">
@@ -185,7 +185,7 @@ export function SubmissionsTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between border-t border-gray-200 px-6 py-3">
+      <div className="flex items-center justify-between border-t border-gray-200 px-4 py-3">
         <div className="text-sm text-gray-500">
           Showing {submissions.length} of {total} submissions
         </div>

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Cookie name for admin session
-const ADMIN_SESSION_COOKIE = 'rightfit_admin_session';
+const ADMIN_SESSION_COOKIE = 'applybetter_admin_session';
 
 // Routes that don't require authentication
 const PUBLIC_ADMIN_ROUTES = ['/admin/login'];

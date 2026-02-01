@@ -125,7 +125,6 @@ export default function BillingPage() {
   return (
     <AdminShell
       title="Billing"
-      description="Revenue overview and payment management"
     >
       {/* Stats */}
       <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -169,7 +168,7 @@ export default function BillingPage() {
       </Card>
 
       {/* Filters */}
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-lg font-semibold">Payment History</h2>
         <Select
           value={statusFilter}
@@ -214,31 +213,31 @@ export default function BillingPage() {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="pb-3 text-left text-sm font-medium text-gray-500">
+                    <tr className="border-b border-gray-200 bg-gray-50">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                         Customer
                       </th>
-                      <th className="pb-3 text-left text-sm font-medium text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                         Amount
                       </th>
-                      <th className="pb-3 text-left text-sm font-medium text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                         Status
                       </th>
-                      <th className="pb-3 text-left text-sm font-medium text-gray-500">
+                      <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                         Date
                       </th>
-                      <th className="pb-3 text-right text-sm font-medium text-gray-500">
+                      <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {payments.map((payment) => (
-                      <tr key={payment.id}>
-                        <td className="py-4">
+                      <tr key={payment.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-4">
                           {payment.submissions ? (
                             <div>
-                              <p className="font-medium">
+                              <p className="font-medium text-gray-900">
                                 {payment.submissions.full_name}
                               </p>
                               <p className="text-sm text-gray-500">
@@ -249,8 +248,8 @@ export default function BillingPage() {
                             <span className="text-gray-400">-</span>
                           )}
                         </td>
-                        <td className="py-4">
-                          <span className="font-medium">
+                        <td className="px-4 py-4">
+                          <span className="font-medium text-gray-900">
                             {formatCurrency(payment.amount)}
                           </span>
                           {payment.refund_amount && (
@@ -259,11 +258,11 @@ export default function BillingPage() {
                             </span>
                           )}
                         </td>
-                        <td className="py-4">{getStatusBadge(payment.status)}</td>
-                        <td className="py-4 text-sm text-gray-500">
+                        <td className="px-4 py-4">{getStatusBadge(payment.status)}</td>
+                        <td className="px-4 py-4 text-sm text-gray-500">
                           {formatDateTime(payment.created_at)}
                         </td>
-                        <td className="py-4 text-right">
+                        <td className="px-4 py-4 text-right">
                           {payment.status === "pending" && (
                             <Button
                               variant="outline"

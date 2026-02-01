@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Start Your CV Revamp | Rightfit",
+  title: "Start Your CV Revamp | ApplyBetter",
   description:
     "Fill out this form to get your CV rewritten. $30, delivered in 48-96 hours.",
 };
@@ -40,7 +40,7 @@ export default function FormPage() {
       {/* Footer */}
       <footer className="max-w-2xl mx-auto mt-12 pt-8 border-t border-border text-center">
         <p className="text-sm text-muted-foreground">
-          Questions? Email us at hello@rightfit.com
+          Questions? Email us at hello@applybetter.com
         </p>
       </footer>
     </main>

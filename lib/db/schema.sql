@@ -1,4 +1,4 @@
--- Rightfit Database Schema for Supabase
+-- ApplyBetter Database Schema for Supabase
 -- Run this in the Supabase SQL Editor to set up your database
 
 -- Enable UUID extension

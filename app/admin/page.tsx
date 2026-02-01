@@ -126,7 +126,6 @@ export default function AdminDashboardPage() {
   return (
     <AdminShell
       title="Dashboard"
-      description="Overview of your CV rewrite business"
       actions={
         <Button
           variant="outline"

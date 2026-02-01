@@ -54,7 +54,6 @@ export default function SettingsPage() {
   return (
     <AdminShell
       title="Settings"
-      description="Configure integrations and preferences"
     >
       {/* Integration Status */}
       <Card className="mb-6">

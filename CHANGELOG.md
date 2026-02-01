@@ -1,6 +1,55 @@
-# Rightfit Changelog
+# ApplyBetter Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [2026-02-01] - Orders Workflow Redesign
+
+### Added
+
+#### Orders Page (`/admin/orders`)
+- Renamed "Submissions" to "Orders" throughout the admin interface
+- New chronological, single-page order detail view (Shopify-style workflow)
+- **CustomerCard component**: Displays customer name, email, LinkedIn, payment status, order date
+- **SubmissionCard component**: Shows target role, industries, achievements, challenges, tools, certifications
+- **FilesSection component**: 
+  - Original CV view/download
+  - Cover letter view/download (if exists)
+  - Rewritten CV versioning (V1, V2, V3...)
+  - Drag-and-drop upload with file validation (PDF/DOCX, max 10MB)
+- **OrderTimeline component**: Chronological activity feed showing all order events
+- **OrderActions component**: 
+  - Send Message modal with templates (Status Update, CV Ready, Custom)
+  - Request Info modal with templates (Clarification, Missing Info, Achievements)
+  - Refund modal with reason tracking
+- Action buttons: Change Status, Send Message, Request Info, Mark Complete, Refund
+
+#### Dummy Data (`lib/dummy-data.ts`)
+- 6 realistic orders at different workflow stages for testing:
+  - Order 1: Sarah Chen (Tech PM) - Pending, just received
+  - Order 2: Marcus Johnson (Marketing) - In Progress with V1 draft
+  - Order 3: Emily Rodriguez (Finance) - Under Review
+  - Order 4: James Wilson (Sales) - Completed, ready for delivery
+  - Order 5: Priya Patel (Data Analytics) - Delivered with V1 + V2
+  - Order 6: Alex Thompson - Refunded
+- Each order includes realistic form data, AI grades, notes, payments, and activity logs
+- CVVersion type for tracking multiple rewritten CV versions
+
+#### New API Routes
+- `/api/admin/orders` - List and update orders (with dummy data fallback)
+- `/api/admin/orders/[id]` - Get single order detail
+
+### Changed
+- Admin navigation: "Submissions" → "Orders"
+- Order detail page: Replaced 4-tab layout with single-page chronological flow
+- OrdersTable component replaces SubmissionsTable for orders page
+
+### Technical Notes
+- Orders page falls back to dummy data when database is not configured
+- CV versioning supports unlimited versions with auto-incrementing numbers
+- Email modals are UI-only (no backend integration yet)
+- File uploads are simulated in UI (no actual storage in this phase)
+
+---
 
 ## [2026-01-31] - Build Fixes for Vercel Deployment
 
@@ -172,7 +221,7 @@ All notable changes to this project will be documented in this file.
 ### File Structure
 
 ```
-rightfit/
+applybetter/
 ├── CHANGELOG.md
 ├── PROJECT_CONTEXT.md
 ├── .env.example
