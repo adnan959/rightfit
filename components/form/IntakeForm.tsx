@@ -90,7 +90,7 @@ export function IntakeForm() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (paymentIntentId: string) => {
     setIsSubmitting(true);
     try {
       const data = form.getValues();
@@ -107,6 +107,11 @@ export function IntakeForm() {
         }
       });
 
+      // Add payment intent ID
+      if (paymentIntentId) {
+        formData.append("paymentIntentId", paymentIntentId);
+      }
+
       // Submit to API
       const response = await fetch("/api/submit-intake", {
         method: "POST",
@@ -114,15 +119,15 @@ export function IntakeForm() {
       });
 
       if (response.ok) {
-        // Redirect to success page or show success message
-        alert("Thank you! Your CV revamp request has been submitted. We'll be in touch within 48-96 hours.");
-        window.location.href = "/";
+        // Redirect to success page
+        window.location.href = "/?success=true";
       } else {
-        throw new Error("Submission failed");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Submission failed");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("There was an error submitting your request. Please try again.");
+      alert("There was an error submitting your request. Please try again or contact support.");
     } finally {
       setIsSubmitting(false);
     }

@@ -246,7 +246,7 @@ export default function OrderDetailPage() {
 
   if (isLoading) {
     return (
-      <AdminShell title="Loading...">
+      <AdminShell hideHeader>
         <div className="flex h-64 items-center justify-center">
           <div className="text-gray-500">Loading order...</div>
         </div>
@@ -256,7 +256,7 @@ export default function OrderDetailPage() {
 
   if (!order) {
     return (
-      <AdminShell title="Not Found">
+      <AdminShell hideHeader>
         <div className="flex h-64 flex-col items-center justify-center">
           <AlertTriangle className="h-8 w-8 text-gray-400" />
           <p className="mt-2 text-gray-500">Order not found</p>
@@ -274,7 +274,7 @@ export default function OrderDetailPage() {
   const isClosed = order.status === "delivered" || order.status === "refunded";
 
   return (
-    <AdminShell title="">
+    <AdminShell hideHeader>
       {/* Header */}
       <div className="-mx-4 -mt-4 sm:-mx-6 sm:-mt-6 mb-4 border-b border-border bg-card px-4 py-3 sm:px-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

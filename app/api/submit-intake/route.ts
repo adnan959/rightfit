@@ -3,6 +3,9 @@ import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { existsSync } from "fs";
 import { supabaseAdmin, isSupabaseConfigured, uploadFile, CV_STORAGE_BUCKET } from "@/lib/supabase";
+import { getStripe, isStripeConfigured, CV_REWRITE_PRICE } from "@/lib/stripe";
+import { getResend, isResendConfigured, EMAIL_FROM, EMAIL_REPLY_TO } from "@/lib/resend";
+import { getOrderConfirmationEmail } from "@/lib/email-templates";
 import type { SubmissionInsert, CareerStage, TimelineOption, CoverLetterOption } from "@/lib/db/types";
 
 // Fallback: Store submissions in JSON files (when Supabase is not configured)
@@ -47,6 +50,53 @@ async function logActivity(submissionId: string, action: string, description?: s
   }
 }
 
+// Helper to send order confirmation email
+async function sendOrderConfirmationEmail(
+  email: string,
+  name: string,
+  orderId: string
+): Promise<boolean> {
+  if (!isResendConfigured()) {
+    console.log("Resend not configured, skipping confirmation email");
+    return false;
+  }
+
+  try {
+    const resend = getResend();
+    const emailContent = getOrderConfirmationEmail({
+      customerName: name,
+      customerEmail: email,
+      orderId,
+      orderDate: new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+    });
+
+    const { error } = await resend.emails.send({
+      from: EMAIL_FROM,
+      to: email,
+      replyTo: EMAIL_REPLY_TO,
+      subject: emailContent.subject,
+      html: emailContent.html,
+      text: emailContent.text,
+    });
+
+    if (error) {
+      console.error("Failed to send confirmation email:", error);
+      return false;
+    }
+
+    console.log("Confirmation email sent to:", email);
+    return true;
+  } catch (error) {
+    console.error("Error sending confirmation email:", error);
+    return false;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -67,10 +117,35 @@ export async function POST(request: NextRequest) {
     const hasCoverLetter = formData.get("hasCoverLetter") as string;
     const certifications = formData.get("certifications") as string | null;
     const tools = formData.get("tools") as string | null;
+    const paymentIntentId = formData.get("paymentIntentId") as string | null;
 
     // Extract files
     const cvFile = formData.get("cvFile") as File | null;
     const coverLetterFile = formData.get("coverLetterFile") as File | null;
+
+    // Verify payment if Stripe is configured and payment intent provided
+    let verifiedPayment = false;
+    if (paymentIntentId && isStripeConfigured()) {
+      try {
+        const stripe = getStripe();
+        const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+        
+        if (paymentIntent.status === "succeeded") {
+          verifiedPayment = true;
+        } else {
+          return NextResponse.json(
+            { error: "Payment not completed. Please try again." },
+            { status: 400 }
+          );
+        }
+      } catch (error) {
+        console.error("Error verifying payment:", error);
+        return NextResponse.json(
+          { error: "Failed to verify payment" },
+          { status: 400 }
+        );
+      }
+    }
 
     // Validate required fields
     if (!fullName || !email || !jobTitles || !careerStage || !timeline || !location) {
@@ -112,6 +187,8 @@ export async function POST(request: NextRequest) {
         tools,
         cvFile,
         coverLetterFile,
+        paymentIntentId,
+        verifiedPayment,
       });
     } else {
       return await handleJsonSubmission({
@@ -132,6 +209,8 @@ export async function POST(request: NextRequest) {
         tools,
         cvFile,
         coverLetterFile,
+        paymentIntentId,
+        verifiedPayment,
       });
     }
   } catch (error) {
@@ -167,6 +246,8 @@ async function handleSupabaseSubmission(data: {
   tools: string | null;
   cvFile: File | null;
   coverLetterFile: File | null;
+  paymentIntentId: string | null;
+  verifiedPayment: boolean;
 }) {
   if (!supabaseAdmin) {
     throw new Error("Supabase not configured");
@@ -264,13 +345,44 @@ async function handleSupabaseSubmission(data: {
     }
   }
 
+  // Create payment record if payment was verified
+  if (data.verifiedPayment && data.paymentIntentId) {
+    const { error: paymentError } = await supabaseAdmin
+      .from('payments')
+      .insert({
+        submission_id: submissionId,
+        amount: CV_REWRITE_PRICE,
+        currency: 'usd',
+        status: 'paid',
+        stripe_payment_intent_id: data.paymentIntentId,
+        metadata: {
+          product: 'cv_rewrite',
+          email: data.email,
+        },
+      });
+
+    if (paymentError) {
+      console.error("Payment record error:", paymentError);
+    } else {
+      await logActivity(submissionId, 'Payment received', `Payment of $${CV_REWRITE_PRICE / 100} received via Stripe`);
+    }
+  }
+
   // Log activity
-  await logActivity(submissionId, 'submission_created', `New submission from ${data.email}`);
+  await logActivity(submissionId, 'Order submitted', `New order from ${data.fullName} (${data.email})`);
+
+  // Send confirmation email
+  const emailSent = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId);
+  if (emailSent) {
+    await logActivity(submissionId, 'Confirmation email sent', `Email sent to ${data.email}`);
+  }
 
   console.log("New intake submission (Supabase):", {
     id: submissionId,
     email: data.email,
     fullName: data.fullName,
+    paymentVerified: data.verifiedPayment,
+    emailSent,
   });
 
   return NextResponse.json({
@@ -299,6 +411,8 @@ async function handleJsonSubmission(data: {
   tools: string | null;
   cvFile: File | null;
   coverLetterFile: File | null;
+  paymentIntentId: string | null;
+  verifiedPayment: boolean;
 }) {
   // Generate submission ID
   const submissionId = `sub_${Date.now()}_${Math.random().toString(36).substring(7)}`;
@@ -355,10 +469,15 @@ async function handleJsonSubmission(data: {
   const submissionPath = join(SUBMISSIONS_DIR, `${submissionId}.json`);
   await writeFile(submissionPath, JSON.stringify(submission, null, 2));
 
+  // Send confirmation email
+  const emailSent = await sendOrderConfirmationEmail(data.email, data.fullName, submissionId);
+
   console.log("New intake submission (JSON):", {
     id: submissionId,
     email: data.email,
     fullName: data.fullName,
+    paymentVerified: data.verifiedPayment,
+    emailSent,
   });
 
   return NextResponse.json({
