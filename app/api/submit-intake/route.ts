@@ -132,7 +132,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Use Supabase if configured, otherwise fall back to JSON files
+    console.log("Supabase configured:", isSupabaseConfigured(), "supabaseAdmin exists:", !!supabaseAdmin);
+    console.log("NEXT_PUBLIC_SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL ? "SET" : "NOT SET");
+    console.log("SUPABASE_SERVICE_ROLE_KEY:", process.env.SUPABASE_SERVICE_ROLE_KEY ? "SET" : "NOT SET");
+    
     if (isSupabaseConfigured() && supabaseAdmin) {
+      console.log("Using Supabase for submission");
       return await handleSupabaseSubmission({
         fullName,
         email,
@@ -141,6 +146,7 @@ export async function POST(request: NextRequest) {
         baseUrl,
       });
     } else {
+      console.log("Using JSON fallback for submission (Supabase not configured)");
       return await handleJsonSubmission({
         fullName,
         email,

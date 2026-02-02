@@ -13,11 +13,14 @@ export async function GET(
     const email = searchParams.get("email");
 
     console.log("Order fetch request:", { id, hasToken: !!token, hasEmail: !!email });
+    console.log("Supabase configured:", isSupabaseConfigured(), "supabaseAdmin exists:", !!supabaseAdmin);
 
     if (!isSupabaseConfigured() || !supabaseAdmin) {
       console.error("Supabase not configured for order fetch");
+      console.error("NEXT_PUBLIC_SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL ? "SET" : "NOT SET");
+      console.error("SUPABASE_SERVICE_ROLE_KEY:", process.env.SUPABASE_SERVICE_ROLE_KEY ? "SET" : "NOT SET");
       return NextResponse.json(
-        { success: false, error: "Service unavailable" },
+        { success: false, error: "Service unavailable - Supabase not configured" },
         { status: 503 }
       );
     }
