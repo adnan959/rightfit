@@ -3,81 +3,39 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { FormProgress } from "./FormProgress";
 import { Step1BasicInfo } from "./Step1BasicInfo";
-import { Step2CVUpload } from "./Step2CVUpload";
-import { Step3CareerGoals } from "./Step3CareerGoals";
-import { Step4Timeline } from "./Step4Timeline";
-import { Step5Experience } from "./Step5Experience";
-import { Step6Challenges } from "./Step6Challenges";
-import { Step7Extras } from "./Step7Extras";
-import { Step8Review } from "./Step8Review";
-import {
-  intakeFormSchema,
-  IntakeFormData,
-  step1Schema,
-  step2Schema,
-  step3Schema,
-  step4Schema,
-  step5Schema,
-  step6Schema,
-  step7Schema,
-} from "@/lib/form-schema";
+import { CheckoutPayment } from "./CheckoutPayment";
 
-const TOTAL_STEPS = 8;
+// Simplified checkout schema - just name and email
+const checkoutSchema = z.object({
+  fullName: z.string().min(2, "Please enter your full name"),
+  email: z.string().email("Please enter a valid email"),
+});
 
-// Validation schemas per step
-const stepSchemas = [
-  step1Schema,
-  step2Schema,
-  step3Schema,
-  step4Schema,
-  step5Schema,
-  step6Schema,
-  step7Schema,
-  null, // Step 8 is review, no additional validation
-];
+export type CheckoutFormData = z.infer<typeof checkoutSchema>;
+
+const TOTAL_STEPS = 2;
 
 export function IntakeForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leadCaptured, setLeadCaptured] = useState(false);
 
-  const form = useForm<IntakeFormData>({
-    resolver: zodResolver(intakeFormSchema),
+  const form = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutSchema),
     defaultValues: {
       fullName: "",
       email: "",
-      linkedinUrl: "",
-      industries: [],
-      jobTitles: "",
-      careerStage: undefined,
-      timeline: undefined,
-      location: "",
-      currentRole: "",
-      achievements: "",
-      challenges: [],
-      additionalContext: "",
-      hasCoverLetter: undefined,
-      certifications: "",
-      tools: "",
     },
     mode: "onTouched",
   });
 
-  const validateCurrentStep = async () => {
-    const schema = stepSchemas[currentStep - 1];
-    if (!schema) return true;
-
-    const fieldsToValidate = Object.keys(schema.shape);
-    const result = await form.trigger(fieldsToValidate as (keyof IntakeFormData)[]);
-    return result;
-  };
-
   const handleNext = async () => {
-    const isValid = await validateCurrentStep();
+    const isValid = await form.trigger();
     if (isValid && currentStep < TOTAL_STEPS) {
       // Capture lead when moving from Step 1 to Step 2
       if (currentStep === 1 && !leadCaptured) {
@@ -117,39 +75,28 @@ export function IntakeForm() {
     setIsSubmitting(true);
     try {
       const data = form.getValues();
-      
-      // Create FormData for file uploads
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (value instanceof File) {
-          formData.append(key, value);
-        } else if (Array.isArray(value)) {
-          formData.append(key, JSON.stringify(value));
-        } else if (value !== undefined && value !== null) {
-          formData.append(key, String(value));
-        }
-      });
 
-      // Add payment intent ID
-      if (paymentIntentId) {
-        formData.append("paymentIntentId", paymentIntentId);
-      }
-
-      // Submit to API
+      // Submit minimal data to create order
       const response = await fetch("/api/submit-intake", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: data.fullName,
+          email: data.email,
+          paymentIntentId,
+        }),
       });
 
       const responseData = await response.json();
 
       if (response.ok && responseData.success) {
-        // Redirect to order confirmation page
-        if (responseData.orderUrl) {
+        // Redirect to order completion page to collect details
+        if (responseData.completeUrl) {
+          window.location.href = responseData.completeUrl;
+        } else if (responseData.orderUrl) {
           window.location.href = responseData.orderUrl;
         } else {
-          // Fallback to order page without token
-          window.location.href = `/order/${responseData.submissionId}`;
+          window.location.href = `/order/${responseData.submissionId}/complete`;
         }
       } else {
         throw new Error(responseData.error || "Submission failed");
@@ -168,20 +115,8 @@ export function IntakeForm() {
       case 1:
         return <Step1BasicInfo form={form} />;
       case 2:
-        return <Step2CVUpload form={form} />;
-      case 3:
-        return <Step3CareerGoals form={form} />;
-      case 4:
-        return <Step4Timeline form={form} />;
-      case 5:
-        return <Step5Experience form={form} />;
-      case 6:
-        return <Step6Challenges form={form} />;
-      case 7:
-        return <Step7Extras form={form} />;
-      case 8:
         return (
-          <Step8Review
+          <CheckoutPayment
             form={form}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
@@ -199,26 +134,31 @@ export function IntakeForm() {
       <div className="bg-white rounded-2xl shadow-soft border border-border p-6 md:p-8">
         {renderStep()}
 
-        {/* Navigation buttons */}
-        {currentStep < TOTAL_STEPS && (
-          <div className="flex justify-between mt-8 pt-6 border-t border-border">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handlePrevious}
-              disabled={currentStep === 1}
-              className="gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
+        {/* Navigation buttons - only show on step 1 */}
+        {currentStep === 1 && (
+          <div className="flex justify-end mt-8 pt-6 border-t border-border">
             <Button
               type="button"
               onClick={handleNext}
               className="bg-coral hover:bg-coral-dark text-white gap-2"
             >
-              Continue
+              Continue to Payment
               <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+        )}
+
+        {/* Back button on payment step */}
+        {currentStep === 2 && (
+          <div className="mt-6 pt-4 border-t border-border">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handlePrevious}
+              className="gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
             </Button>
           </div>
         )}

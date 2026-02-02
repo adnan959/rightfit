@@ -1,5 +1,6 @@
 export { IntakeForm } from "./IntakeForm";
 export { FormProgress } from "./FormProgress";
+export { CheckoutPayment } from "./CheckoutPayment";
 export { Step1BasicInfo } from "./Step1BasicInfo";
 export { Step2CVUpload } from "./Step2CVUpload";
 export { Step3CareerGoals } from "./Step3CareerGoals";

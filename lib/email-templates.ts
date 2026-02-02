@@ -6,6 +6,7 @@ export interface OrderConfirmationData {
   orderId: string;
   orderDate: string;
   orderUrl: string; // Magic link to order page
+  completeUrl?: string; // Magic link to complete order details
 }
 
 export interface CVDeliveryData {
@@ -21,7 +22,11 @@ export function getOrderConfirmationEmail(data: OrderConfirmationData): {
   html: string;
   text: string;
 } {
-  const subject = `Thanks ${data.customerName.split(" ")[0]}! Your CV revamp is underway`;
+  const subject = `Action Required: Complete your CV order, ${data.customerName.split(" ")[0]}!`;
+
+  // Use completeUrl if provided (for payment-first flow), otherwise use orderUrl
+  const actionUrl = data.completeUrl || data.orderUrl;
+  const actionText = data.completeUrl ? "Complete Your Order" : "View Order Status";
 
   const html = `
 <!DOCTYPE html>
@@ -41,12 +46,23 @@ export function getOrderConfirmationEmail(data: OrderConfirmationData): {
     <!-- Main Content -->
     <div style="background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
       <h2 style="color: #2D3748; font-size: 20px; margin: 0 0 16px 0;">
-        Thanks ${data.customerName.split(" ")[0]}! 🎉
+        Thanks for your payment, ${data.customerName.split(" ")[0]}! 
       </h2>
       
+      ${data.completeUrl ? `
+      <div style="background-color: #FFF5F5; border: 2px solid #FF6B6B; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+        <p style="color: #C53030; font-size: 16px; font-weight: 600; margin: 0 0 8px 0;">
+          One more step to get started!
+        </p>
+        <p style="color: #742A2A; font-size: 14px; margin: 0;">
+          Please upload your CV and share a few details about your career goals so I can create the perfect CV for you.
+        </p>
+      </div>
+      ` : `
       <p style="color: #4A5568; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">
         I've received your CV and all the details you shared. I'm excited to help make your experience shine through.
       </p>
+      `}
       
       <div style="background-color: #F7FAFC; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
         <p style="color: #718096; font-size: 14px; margin: 0 0 8px 0;">Order Reference</p>
@@ -54,14 +70,28 @@ export function getOrderConfirmationEmail(data: OrderConfirmationData): {
       </div>
 
       <div style="text-align: center; margin-bottom: 24px;">
-        <a href="${data.orderUrl}" style="display: inline-block; background-color: #FF6B6B; color: white; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 50px;">
-          View Order Status
+        <a href="${actionUrl}" style="display: inline-block; background-color: #FF6B6B; color: white; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 50px;">
+          ${actionText}
         </a>
       </div>
       
       <h3 style="color: #2D3748; font-size: 16px; margin: 0 0 16px 0;">Here's what happens next:</h3>
       
       <div style="margin-bottom: 24px;">
+        ${data.completeUrl ? `
+        <div style="display: flex; align-items: flex-start; margin-bottom: 12px;">
+          <span style="background-color: #FF6B6B; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-right: 12px; flex-shrink: 0;">1</span>
+          <p style="color: #4A5568; font-size: 14px; margin: 0; line-height: 24px;"><strong>You complete your order</strong> - Upload your CV and share your career goals</p>
+        </div>
+        <div style="display: flex; align-items: flex-start; margin-bottom: 12px;">
+          <span style="background-color: #FF6B6B; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-right: 12px; flex-shrink: 0;">2</span>
+          <p style="color: #4A5568; font-size: 14px; margin: 0; line-height: 24px;">I review your CV and rewrite it to be clear, scannable, and impact-first</p>
+        </div>
+        <div style="display: flex; align-items: flex-start;">
+          <span style="background-color: #FF6B6B; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-right: 12px; flex-shrink: 0;">3</span>
+          <p style="color: #4A5568; font-size: 14px; margin: 0; line-height: 24px;">You'll receive your rewritten CV within <strong>48-96 hours</strong> of completing your order</p>
+        </div>
+        ` : `
         <div style="display: flex; align-items: flex-start; margin-bottom: 12px;">
           <span style="background-color: #FF6B6B; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-right: 12px; flex-shrink: 0;">1</span>
           <p style="color: #4A5568; font-size: 14px; margin: 0; line-height: 24px;">I review your CV and the context you provided</p>
@@ -74,6 +104,7 @@ export function getOrderConfirmationEmail(data: OrderConfirmationData): {
           <span style="background-color: #FF6B6B; color: white; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; margin-right: 12px; flex-shrink: 0;">3</span>
           <p style="color: #4A5568; font-size: 14px; margin: 0; line-height: 24px;">You'll receive your rewritten CV within <strong>48-96 hours</strong></p>
         </div>
+        `}
       </div>
       
       <p style="color: #4A5568; font-size: 14px; line-height: 1.6; margin: 0;">
@@ -92,7 +123,26 @@ export function getOrderConfirmationEmail(data: OrderConfirmationData): {
 </html>
   `.trim();
 
-  const text = `
+  const text = data.completeUrl ? `
+Thanks for your payment, ${data.customerName.split(" ")[0]}!
+
+ONE MORE STEP TO GET STARTED:
+Please upload your CV and share a few details about your career goals so I can create the perfect CV for you.
+
+Order Reference: #${data.orderId.slice(0, 8).toUpperCase()}
+
+Complete your order here: ${data.completeUrl}
+
+Here's what happens next:
+
+1. You complete your order - Upload your CV and share your career goals
+2. I review your CV and rewrite it to be clear, scannable, and impact-first
+3. You'll receive your rewritten CV within 48-96 hours of completing your order
+
+If you have any questions in the meantime, just reply to this email.
+
+- ApplyBetter
+  `.trim() : `
 Thanks ${data.customerName.split(" ")[0]}!
 
 I've received your CV and all the details you shared. I'm excited to help make your experience shine through.
@@ -120,7 +170,7 @@ export function getCVDeliveryEmail(data: CVDeliveryData): {
   html: string;
   text: string;
 } {
-  const subject = `Your rewritten CV is ready! 🎉`;
+  const subject = `Your rewritten CV is ready! `;
 
   const html = `
 <!DOCTYPE html>
@@ -140,7 +190,7 @@ export function getCVDeliveryEmail(data: CVDeliveryData): {
     <!-- Main Content -->
     <div style="background-color: #ffffff; border-radius: 12px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
       <h2 style="color: #2D3748; font-size: 20px; margin: 0 0 16px 0;">
-        Great news, ${data.customerName.split(" ")[0]}! 🎉
+        Great news, ${data.customerName.split(" ")[0]}!
       </h2>
       
       <p style="color: #4A5568; font-size: 16px; line-height: 1.6; margin: 0 0 24px 0;">

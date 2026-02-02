@@ -2,7 +2,8 @@
 // These match the Supabase schema defined in schema.sql
 
 export type SubmissionStatus = 
-  | 'pending'
+  | 'pending_details'  // Paid but waiting for customer to provide CV and details
+  | 'pending'          // All details provided, ready for processing
   | 'in_progress'
   | 'review'
   | 'completed'
@@ -254,6 +255,7 @@ export interface DashboardStats {
 
 // Status labels for display
 export const STATUS_LABELS: Record<SubmissionStatus, string> = {
+  pending_details: 'Awaiting Details',
   pending: 'Pending',
   in_progress: 'In Progress',
   review: 'Under Review',
@@ -263,6 +265,7 @@ export const STATUS_LABELS: Record<SubmissionStatus, string> = {
 };
 
 export const STATUS_COLORS: Record<SubmissionStatus, string> = {
+  pending_details: 'bg-orange-100 text-orange-800',
   pending: 'bg-yellow-100 text-yellow-800',
   in_progress: 'bg-blue-100 text-blue-800',
   review: 'bg-purple-100 text-purple-800',

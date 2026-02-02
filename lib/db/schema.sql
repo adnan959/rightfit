@@ -6,7 +6,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Enum types
 CREATE TYPE submission_status AS ENUM (
-  'pending',
+  'pending_details',  -- Paid but waiting for customer to provide CV and details
+  'pending',          -- All details provided, ready for processing
   'in_progress', 
   'review',
   'completed',

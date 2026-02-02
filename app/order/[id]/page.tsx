@@ -49,6 +49,11 @@ interface InfoRequest {
 }
 
 const STATUS_INFO: Record<string, { label: string; description: string; color: string }> = {
+  pending_details: {
+    label: "Complete Your Order",
+    description: "Please provide your CV and details so we can start working on your order.",
+    color: "bg-orange-100 text-orange-700",
+  },
   pending: {
     label: "Order Received",
     description: "We've received your order. Review begins shortly.",
@@ -230,6 +235,8 @@ export default function OrderPage() {
             <div className="flex items-start gap-4">
               {["completed", "delivered"].includes(order.status) ? (
                 <CheckCircle className="h-8 w-8 text-green-500 flex-shrink-0" />
+              ) : order.status === "pending_details" ? (
+                <AlertCircle className="h-8 w-8 text-orange-500 flex-shrink-0" />
               ) : (
                 <Clock className="h-8 w-8 text-primary flex-shrink-0" />
               )}
@@ -245,6 +252,30 @@ export default function OrderPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Complete Order CTA - Show when status is pending_details */}
+        {order.status === "pending_details" && (
+          <Card className="mb-6 border-orange-200 bg-orange-50">
+            <CardContent className="pt-6">
+              <div className="flex items-start gap-4">
+                <AlertCircle className="h-8 w-8 text-orange-600 flex-shrink-0" />
+                <div className="flex-1">
+                  <h2 className="text-lg font-semibold text-orange-800 mb-1">
+                    Complete Your Order
+                  </h2>
+                  <p className="text-orange-700 text-sm mb-4">
+                    We can&apos;t start working on your CV until you upload it and provide a few details about your career goals.
+                  </p>
+                  <Link href={`/order/${id}/complete?token=${token}`}>
+                    <Button className="bg-orange-600 hover:bg-orange-700">
+                      Complete Order Now
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Download Section - Only show when CV is ready */}
         {downloadUrl && (

@@ -1,15 +1,15 @@
 "use client";
 
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, FieldValues, Path } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { IntakeFormData } from "@/lib/form-schema";
 
-interface Step1Props {
-  form: UseFormReturn<IntakeFormData>;
+// Generic interface that works with any form containing fullName and email
+interface Step1Props<T extends FieldValues> {
+  form: UseFormReturn<T>;
 }
 
-export function Step1BasicInfo({ form }: Step1Props) {
+export function Step1BasicInfo<T extends { fullName: string; email: string }>({ form }: Step1Props<T>) {
   const {
     register,
     formState: { errors },
@@ -31,13 +31,13 @@ export function Step1BasicInfo({ form }: Step1Props) {
           </Label>
           <Input
             id="fullName"
-            {...register("fullName")}
+            {...register("fullName" as Path<T>)}
             placeholder="Enter your full name"
             className="mt-2"
           />
           {errors.fullName && (
             <p className="text-sm text-destructive mt-1">
-              {errors.fullName.message}
+              {(errors.fullName as { message?: string })?.message}
             </p>
           )}
         </div>
@@ -49,13 +49,13 @@ export function Step1BasicInfo({ form }: Step1Props) {
           <Input
             id="email"
             type="email"
-            {...register("email")}
+            {...register("email" as Path<T>)}
             placeholder="you@example.com"
             className="mt-2"
           />
           {errors.email && (
             <p className="text-sm text-destructive mt-1">
-              {errors.email.message}
+              {(errors.email as { message?: string })?.message}
             </p>
           )}
           <p className="text-sm text-muted-foreground mt-1">
