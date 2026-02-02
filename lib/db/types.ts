@@ -76,7 +76,7 @@ export interface Submission {
   location: string;
   
   // Details
-  current_role: string | null;
+  current_job_role: string | null;
   achievements: string | null;
   challenges: string[];
   additional_context: string | null;

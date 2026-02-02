@@ -383,10 +383,10 @@ function OverviewTab({
           <CardTitle className="text-lg">Additional Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {submission.current_role && (
+          {submission.current_job_role && (
             <div>
               <span className="text-sm text-gray-500">Current Role:</span>
-              <p className="mt-1">{submission.current_role}</p>
+              <p className="mt-1">{submission.current_job_role}</p>
             </div>
           )}
           {submission.achievements && (

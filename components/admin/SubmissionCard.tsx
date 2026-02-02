@@ -70,7 +70,7 @@ export function SubmissionCard({ order, showPreview = true }: SubmissionCardProp
                 <Briefcase className="h-4 w-4" />
                 Current Role
               </div>
-              <p className="text-gray-900 text-sm">{order.current_role || "Not specified"}</p>
+              <p className="text-gray-900 text-sm">{order.current_job_role || "Not specified"}</p>
               <p className="text-xs text-gray-500 mt-1">
                 {CAREER_STAGE_LABELS[order.career_stage]}
               </p>

@@ -188,7 +188,7 @@ async function handleSupabaseSubmission(data: {
     career_stage: null,
     timeline: null,
     location: '',
-    current_role: null,
+    current_job_role: null,
     achievements: null,
     challenges: [],
     additional_context: null,

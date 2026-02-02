@@ -161,7 +161,7 @@ async function getJsonSubmission(id: string) {
     career_stage: data.careerStage,
     timeline: data.timeline,
     location: data.location,
-    current_role: data.currentRole || null,
+    current_job_role: data.currentRole || null,
     achievements: data.achievements || null,
     challenges: data.challenges || [],
     additional_context: data.additionalContext || null,

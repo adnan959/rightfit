@@ -73,7 +73,7 @@ export async function PATCH(
     const careerStage = formData.get("careerStage") as string;
     const timeline = formData.get("timeline") as string;
     const location = formData.get("location") as string;
-    const currentRole = formData.get("currentRole") as string;
+    const currentJobRole = formData.get("currentRole") as string;
     const achievements = formData.get("achievements") as string;
     const challengesJson = formData.get("challenges") as string;
     const additionalContext = formData.get("additionalContext") as string | null;
@@ -84,7 +84,7 @@ export async function PATCH(
     const coverLetterFile = formData.get("coverLetterFile") as File | null;
 
     // Validate required fields
-    if (!jobTitles || !careerStage || !timeline || !location || !currentRole || !achievements) {
+    if (!jobTitles || !careerStage || !timeline || !location || !currentJobRole || !achievements) {
       return NextResponse.json(
         { success: false, error: "Missing required fields" },
         { status: 400 }
@@ -115,7 +115,7 @@ export async function PATCH(
       career_stage: careerStage as CareerStage,
       timeline: timeline as TimelineOption,
       location,
-      current_role: currentRole,
+      current_job_role: currentJobRole,
       achievements,
       challenges,
       additional_context: additionalContext || null,

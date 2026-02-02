@@ -84,7 +84,7 @@ CREATE TABLE submissions (
   location TEXT NOT NULL,
   
   -- Details
-  current_role TEXT,
+  current_job_role TEXT,
   achievements TEXT,
   challenges TEXT[] DEFAULT '{}',
   additional_context TEXT,
