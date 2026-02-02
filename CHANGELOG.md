@@ -2,6 +2,148 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2026-02-01] - Taxfix-Style Order Completion Form
+
+### Changed
+
+#### Order Completion Page (`/order/[id]/complete`)
+- **Complete redesign** with Taxfix-style single-page vertical stepper
+- **FormSection component** with three states: completed, active, upcoming
+- **Vertical timeline** with connecting lines between sections
+- **Collapsible sections** - Completed sections show summary + "Edit" button
+- **Visual indicators** - Green checkmarks (completed), arrow (active), numbered circles (upcoming)
+- **Progress bar** in sticky header showing completion percentage
+- **Four sections**:
+  1. Upload your CV - CV file upload + optional LinkedIn
+  2. Career goals - Industries, job titles, career stage, timeline, location
+  3. Your experience - Current role, achievements, challenges
+  4. Final details - Cover letter, certifications, tools
+
+### Technical Notes
+- All sections visible on single page (no page navigation)
+- Click "Edit" on any completed section to re-expand
+- Auto-advances to next section on "Continue"
+- Final "Start My Order" button in last section
+
+---
+
+## [2026-02-01] - Payment-First Form Flow (Taxfit/Taxscout Style)
+
+### Added
+
+#### Simplified Checkout Flow
+- **2-step checkout** instead of 8 steps:
+  - Step 1: Name + Email (lead captured immediately)
+  - Step 2: Stripe payment ($30)
+- **CheckoutPayment component** (`components/form/CheckoutPayment.tsx`) - Streamlined payment UI
+- **Post-payment redirect** to `/order/[id]/complete` for details collection
+
+#### New Database Status
+- **`pending_details`** status added to `SubmissionStatus` enum
+- Orders are created with `pending_details` after payment
+- Status changes to `pending` once customer completes details form
+
+#### Order Details API
+- **`/api/order/[id]/details`** (PATCH) - Updates order with full customer details
+- Handles CV/cover letter file uploads
+- Validates token for security
+- Changes status from `pending_details` to `pending`
+
+#### Email Updates
+- **Order confirmation email** now includes "Complete Your Order" CTA
+- Links to completion page with magic token
+- Different messaging for payment-first flow
+
+#### Admin Orders View
+- **"Awaiting Details" badge** (orange) shown for `pending_details` orders
+- Job titles field hidden when empty (for incomplete orders)
+- Clear visual distinction between complete and incomplete orders
+
+### Changed
+- **IntakeForm** simplified to 2 steps (was 8)
+- **Step1BasicInfo** made generic (works with any form containing name/email)
+- **submit-intake API** now accepts minimal data (name, email, paymentIntentId)
+- Creates order with `pending_details` status and empty fields
+
+### Database Schema Updates
+- Added `pending_details` to `submission_status` enum
+- Added `info_request`, `revision_request` to `note_type` enum
+- Added more values to `lead_source` enum (`form_step1`, `free_audit`, `newsletter`, `other`)
+- Added `metadata` JSONB column to `leads` table
+- **Renamed** `current_role` to `current_job_role` (reserved keyword fix)
+- Made career fields nullable for payment-first flow
+
+### Technical Notes
+- Lead captured at Step 1 before payment (to `leads` table)
+- Order created at payment success (to `submissions` table)
+- Magic link tokens use SHA256 hash with `ORDER_TOKEN_SECRET`
+- JSON fallback uses `/tmp` on Vercel (read-only filesystem)
+
+---
+
+## [2026-02-01] - Customer Order Experience
+
+### Added
+
+#### Customer Order Status Page (`/order/[id]`)
+- **Magic link authentication** - Access via token in URL (sent in email)
+- **Order status display** with color-coded badges
+- **Status descriptions** for each stage (pending, in_progress, review, completed, delivered)
+- **CV download section** when order is completed/delivered
+- **Revision request form** for customers to request changes
+- **Info requests display** - Shows any questions from admin
+
+#### Order Lookup Page (`/order/lookup`)
+- Customers can find orders by entering Order ID + Email
+- Generates magic link token and redirects to order page
+
+#### API Endpoints
+- **`/api/order/[id]`** (GET) - Fetch order details with token verification
+- **`/api/order/[id]/revision`** (POST) - Submit revision request
+- **`/api/order/generate-token`** (POST) - Generate magic link token
+
+#### Magic Link System (`lib/order-tokens.ts`)
+- `generateOrderToken()` - SHA256 hash of orderId + email + secret
+- `verifyOrderToken()` - Validates customer access
+- `generateOrderUrl()` - Full URL with token for emails
+
+#### Email Templates (`lib/email-templates.ts`)
+- **Order confirmation email** with magic link to order page
+- **CV delivery email** with download link and revision CTA
+
+### Technical Notes
+- Tokens use lowercase email for consistency
+- `ORDER_TOKEN_SECRET` env var required for token generation
+- Falls back to `onboarding@resend.dev` if custom domain not verified
+
+---
+
+## [2026-02-01] - Stripe & Resend Integration
+
+### Added
+
+#### Stripe Payment Processing
+- **Stripe client** (`lib/stripe.ts`) with lazy initialization
+- **PaymentIntent creation** (`/api/create-payment-intent`)
+- **Step8Review component** updated with Stripe Elements
+- Payment verification in submit-intake API
+- `payments` table records for successful payments
+
+#### Resend Email Service
+- **Resend client** (`lib/resend.ts`) with lazy initialization
+- Order confirmation emails on submission
+- CV delivery emails when order marked delivered
+- Fallback to `onboarding@resend.dev` for testing
+
+### Configuration
+- `STRIPE_SECRET_KEY` - Server-side Stripe key
+- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` - Client-side Stripe key
+- `RESEND_API_KEY` - Resend API key
+- `RESEND_FROM_EMAIL` (optional) - Custom from address
+- `ORDER_TOKEN_SECRET` - For magic link generation
+
+---
+
 ## [2026-02-01] - Admin UI Polish
 
 ### Changed
