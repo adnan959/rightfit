@@ -61,7 +61,8 @@ async function sendOrderConfirmationEmail(
   orderId: string,
   baseUrl: string
 ): Promise<{ success: boolean; orderUrl: string }> {
-  const orderUrl = generateOrderUrl(orderId, email, baseUrl);
+  // IMPORTANT: Use lowercase email for token generation to match how we store it in DB
+  const orderUrl = generateOrderUrl(orderId, email.toLowerCase(), baseUrl);
   
   if (!isResendConfigured()) {
     console.log("Resend not configured, skipping confirmation email");

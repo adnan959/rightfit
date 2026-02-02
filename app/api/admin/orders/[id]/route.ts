@@ -19,7 +19,8 @@ async function sendDeliveryEmail(
 
   try {
     const resend = getResend();
-    const orderUrl = generateOrderUrl(orderId, email);
+    // Use lowercase email for token generation to match DB storage
+    const orderUrl = generateOrderUrl(orderId, email.toLowerCase());
     const emailContent = getCVDeliveryEmail({
       customerName: name,
       customerEmail: email,

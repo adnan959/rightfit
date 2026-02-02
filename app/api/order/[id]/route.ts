@@ -12,7 +12,10 @@ export async function GET(
     const token = searchParams.get("token");
     const email = searchParams.get("email");
 
+    console.log("Order fetch request:", { id, hasToken: !!token, hasEmail: !!email });
+
     if (!isSupabaseConfigured() || !supabaseAdmin) {
+      console.error("Supabase not configured for order fetch");
       return NextResponse.json(
         { success: false, error: "Service unavailable" },
         { status: 503 }
@@ -39,23 +42,37 @@ export async function GET(
       .eq("id", id)
       .single();
 
-    if (error || !order) {
+    if (error) {
+      console.error("Supabase error fetching order:", error);
+      return NextResponse.json(
+        { success: false, error: `Order not found: ${error.message}` },
+        { status: 404 }
+      );
+    }
+
+    if (!order) {
+      console.error("Order not found for id:", id);
       return NextResponse.json(
         { success: false, error: "Order not found" },
         { status: 404 }
       );
     }
 
+    console.log("Order found:", { id: order.id, email: order.email });
+
     // Verify access - either by token or by email match
     let hasAccess = false;
 
     if (token) {
       hasAccess = verifyOrderToken(id, order.email, token);
+      console.log("Token verification result:", hasAccess);
     } else if (email) {
       hasAccess = email.toLowerCase() === order.email.toLowerCase();
+      console.log("Email match result:", hasAccess);
     }
 
     if (!hasAccess) {
+      console.error("Access denied for order:", { id, providedToken: !!token, providedEmail: email });
       return NextResponse.json(
         { success: false, error: "Invalid access token or email" },
         { status: 403 }
