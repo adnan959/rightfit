@@ -62,15 +62,24 @@ function OrderCard({ order, onStatusChange }: { order: Submission; onStatusChang
           <Badge className={payment.color} variant="secondary">
             {payment.label}
           </Badge>
+          {order.status === "pending_details" && (
+            <Badge className="bg-orange-100 text-orange-700" variant="secondary">
+              Awaiting Details
+            </Badge>
+          )}
         </div>
         
         {/* Bottom row: Role + Email + Time (all inline) */}
         <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Briefcase className="h-3 w-3 flex-shrink-0" />
-            <span className="truncate">{order.job_titles}</span>
-          </div>
-          <span className="text-muted-foreground/50">•</span>
+          {order.job_titles && (
+            <>
+              <div className="flex items-center gap-1">
+                <Briefcase className="h-3 w-3 flex-shrink-0" />
+                <span className="truncate">{order.job_titles}</span>
+              </div>
+              <span className="text-muted-foreground/50">•</span>
+            </>
+          )}
           <span className="truncate">{order.email}</span>
           <span className="text-muted-foreground/50">•</span>
           <span className="text-xs whitespace-nowrap">{formatDistanceToNow(order.created_at)}</span>
