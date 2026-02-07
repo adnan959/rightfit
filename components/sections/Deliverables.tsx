@@ -1,66 +1,69 @@
 "use client";
 
-import { Check, X } from "lucide-react";
+import { AnimateOnScroll } from "@/components/ui/AnimateOnScroll";
+
+const whatYouGet = [
+  "Ready-to-send CV",
+  "Impact-first bullet points",
+  "Clean, scannable structure",
+  "ATS-safe formatting",
+  "Ownership & outcomes highlighted",
+  "Concise — no fluff",
+  "Sounds like you, just sharper",
+  "Delivered in 48–96 hours",
+];
+
+const whatIWontDo = [
+  "No fake numbers",
+  "No generic templates",
+  "No keyword stuffing",
+  "No lying about titles",
+  "No over-design that breaks ATS",
+];
 
 export function Deliverables() {
-  const whatYouGet = [
-    "A rewritten CV that's ready to send",
-    "Strong bullet points that show ownership, outcomes and impact",
-    "Clean structure that reads well",
-    "ATS-safe formatting (no fancy designs that break systems)",
-  ];
-
-  const whatIWontDo = [
-    "No fake numbers",
-    "No generic templates",
-    "No keyword stuffing that reads weird",
-    "No lying about titles",
-    "No 4-page CVs unless it truly makes sense",
-    "No over-design that breaks ATS",
-  ];
-
   return (
-    <section id="what-you-get" className="py-16 md:py-20 px-4 bg-white scroll-mt-20">
-      <div className="max-w-3xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-bold text-navy mb-8">
-          What you get{" "}
-          <span className="text-muted-foreground font-normal text-xl">
-            (clear deliverables)
-          </span>
-        </h2>
+    <section
+      id="what-you-get"
+      className="py-12 md:py-16 px-4 scroll-mt-20"
+    >
+      <AnimateOnScroll>
+        <div className="max-w-[1000px] mx-auto">
+          {/* Headline */}
+          <h2 className="text-3xl md:text-5xl font-extrabold text-navy text-center leading-tight mb-10">
+            What you get
+          </h2>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* What you get */}
-          <div className="bg-success/5 rounded-xl p-6 border border-success/20">
-            <h3 className="text-lg font-semibold text-navy mb-4">
-              You&apos;ll get:
-            </h3>
-            <ul className="space-y-3">
+          {/* Pill tag cloud in bounding box */}
+          <div className="mx-auto bg-white rounded-2xl border border-border shadow-soft p-4 md:p-6 mb-10">
+            <div className="flex flex-wrap justify-center gap-3">
               {whatYouGet.map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <Check className="flex-shrink-0 w-5 h-5 text-success mt-0.5" />
-                  <span className="text-navy-light">{item}</span>
-                </li>
+                <span
+                  key={index}
+                  className="border-2 border-coral rounded-full px-6 py-3 text-coral font-semibold text-sm md:text-base whitespace-nowrap"
+                >
+                  {item}
+                </span>
               ))}
-            </ul>
+            </div>
           </div>
 
-          {/* What I won't do */}
-          <div className="bg-muted rounded-xl p-6 border border-border">
-            <h3 className="text-lg font-semibold text-navy mb-4">
-              What I will NOT do:
-            </h3>
-            <ul className="space-y-3">
-              {whatIWontDo.map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <X className="flex-shrink-0 w-5 h-5 text-muted-foreground mt-0.5" />
-                  <span className="text-navy-light">{item}</span>
-                </li>
-              ))}
-            </ul>
+          {/* What I won't do - pill cloud */}
+          <h3 className="text-lg md:text-xl font-bold text-navy mb-6 text-center">
+            What I will NOT do:
+          </h3>
+          <div className="flex flex-wrap justify-center gap-3">
+            {whatIWontDo.map((item, index) => (
+              <span
+                key={index}
+                className="border-2 border-navy-light/30 rounded-full px-6 py-3 text-navy-light font-semibold text-sm md:text-base whitespace-nowrap"
+              >
+                {item}
+              </span>
+            ))}
           </div>
         </div>
-      </div>
+      </AnimateOnScroll>
     </section>
   );
 }
